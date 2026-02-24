@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — Sakura AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><div class="logo-icon">🌸</div>Sakura <span class="brand">AI</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="templates.html">Templates</a></li>
+      <li><a href="faq.html" class="active">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openModal('loginModal')">Log In</button>
+      <button class="btn-primary" onclick="openModal('signupModal')">Sign Up Free</button>
+      <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="section-tag">Help Center</span>
+    <h1>Frequently Asked <span class="highlight">Questions</span></h1>
+    <p>Everything you need to know about Sakura AI. Can't find your answer? <a href="contact.html" style="color:var(--primary-deep);font-weight:600;">Contact us</a>.</p>
+  </div>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+
+    <!-- General -->
+    <div style="max-width:760px;margin:0 auto 48px;">
+      <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="background:var(--secondary);padding:6px 12px;border-radius:var(--radius-full);font-size:14px;">🌸 General</span>
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item open">
+          <button class="faq-question">What is Sakura AI?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Sakura AI is an all-in-one free platform that brings together powerful AI tools in one place. Everything is beautifully organized by category, so users can easily create content, images, videos, audio, code, and data insights — without jumping between different apps.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Does Sakura AI support Arabic?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes! Sakura AI fully supports both Arabic and English. You can create content, generate images, write code, and use all AI tools in either language with equal quality and accuracy.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Who is Sakura AI for?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Sakura AI is designed for creators, students, freelancers, professionals, and businesses. Whether you're writing blog posts, designing images, studying for exams, or building a business plan — Sakura AI has tools for you.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">How many AI tools are available?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">We currently offer 50+ AI tools across 9 categories: Text & Writing, Image & Design, Video, Audio, Code, Data & Analytics, Study & Learning, Business & Productivity, and Specialized AI. We add new tools regularly.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div style="max-width:760px;margin:0 auto 48px;">
+      <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="background:var(--secondary);padding:6px 12px;border-radius:var(--radius-full);font-size:14px;">👤 Account</span>
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Is Sakura AI really free?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes! Sakura AI is completely free. Simply create an account and get instant access to all 50+ AI tools. No credit card, no subscription, no hidden fees.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Do I need a credit card to sign up?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">No credit card required. Just enter your name, email, and password to create your free account and start using all AI tools immediately.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Are there any usage limits?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Sakura AI is free to use. Fair usage policies apply to ensure a great experience for all users. We'll notify you if any limits are introduced in the future.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data & Privacy -->
+    <div style="max-width:760px;margin:0 auto 48px;">
+      <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="background:var(--secondary);padding:6px 12px;border-radius:var(--radius-full);font-size:14px;">🔒 Data & Privacy</span>
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Are my files and results saved?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. All your projects and generated results are saved securely in your personal dashboard. You can access, download, or delete them at any time.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Is my data private and secure?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">We take privacy seriously. Your data is encrypted in transit and at rest. We never sell your personal data to third parties. See our <a href="privacy.html" style="color:var(--primary-deep);font-weight:600;">Privacy Policy</a> for full details.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Can I delete my account and data?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. You can request account deletion at any time from your account settings or by contacting our support team. All your data will be permanently deleted within 30 days.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools & Features -->
+    <div style="max-width:760px;margin:0 auto;">
+      <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="background:var(--secondary);padding:6px 12px;border-radius:var(--radius-full);font-size:14px;">🤖 Tools & Features</span>
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Can I use the AI tools for commercial purposes?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. Content generated on Sakura AI can be used for commercial purposes, including marketing, client work, and business use. Please review our Terms & Conditions for specific usage guidelines.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">How accurate are the AI tools?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Our AI tools are powered by state-of-the-art language and image models. While they produce high-quality results, we recommend reviewing and editing AI-generated content before publishing, especially for critical use cases.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Are new tools added regularly?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes! We continuously add new AI tools and templates based on user feedback and the latest AI advancements. All registered users get access to new features as soon as they launch.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Is there a mobile app?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Our web platform is fully responsive and works beautifully on mobile browsers. A dedicated mobile app for iOS and Android is currently in development and coming soon.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Still have questions -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner fade-up">
+      <h2>Still have questions? 🌸</h2>
+      <p>Our support team is here to help. Reach out and we'll get back to you quickly.</p>
+      <a href="contact.html" class="btn-white"><i class="fas fa-envelope"></i> Contact Support</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><div class="logo"><div class="logo-icon">🌸</div>Sakura <span class="brand">AI</span></div><p>All AI tools. One beautiful platform.</p><div class="footer-social"><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-youtube"></i></a></div></div>
+      <div class="footer-col"><h4>Platform</h4><ul><li><a href="index.html">Home</a></li><li><a href="tools.html">AI Tools</a></li><li><a href="templates.html">Templates</a></li><li><a href="dashboard.html">Dashboard</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund Policy</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 Sakura AI. All rights reserved. 🌸</p><div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refund.html">Refund</a></div></div>
+  </div>
+</footer>
+
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Welcome Back</h2><p>Log in to your Sakura AI account</p></div>
+    <form class="auth-form"><div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" required /></div><div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password" required /></div><button type="submit" class="btn-submit">Log In</button></form>
+    <div class="modal-footer">Don't have an account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
+  </div>
+</div>
+<div id="signupModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Create Free Account</h2><p>No credit card required</p></div>
+    <form class="auth-form"><div class="form-row"><div class="form-group"><label>First Name</label><input type="text" placeholder="First name" required /></div><div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name" required /></div></div><div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" required /></div><div class="form-group"><label>Password</label><input type="password" placeholder="Create a password" required /></div><button type="submit" class="btn-submit">Create Free Account 🌸</button></form>
+    <div class="modal-footer">Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

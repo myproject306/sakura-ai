@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — Sakura AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .compare-table { width: 100%; border-collapse: collapse; margin-top: 48px; }
+    .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .compare-table th { background: var(--accent); font-weight: 700; color: var(--dark); }
+    .compare-table th:not(:first-child), .compare-table td:not(:first-child) { text-align: center; }
+    .compare-table tr:hover td { background: var(--secondary); }
+    .compare-table .check-yes { color: var(--primary-deep); font-size: 18px; }
+    .compare-table .check-no { color: #ccc; font-size: 18px; }
+    .compare-table .featured-col { background: rgba(247,183,200,0.08); }
+    .faq-mini { max-width: 700px; margin: 0 auto; }
+    .guarantee-box {
+      background: var(--gradient-hero);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .guarantee-box .g-icon { font-size: 48px; margin-bottom: 16px; }
+    .guarantee-box h3 { font-size: 22px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+    .guarantee-box p { font-size: 14px; color: var(--gray); line-height: 1.8; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><div class="logo-icon">🌸</div>Sakura <span class="brand">AI</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="pricing.html" class="active">Pricing</a></li>
+      <li><a href="templates.html">Templates</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openModal('loginModal')">Log In</button>
+      <button class="btn-primary" onclick="openModal('signupModal')">Start Free Trial</button>
+      <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="section-tag">Simple Pricing</span>
+    <h1>One Subscription. <span class="highlight">All AI Tools.</span></h1>
+    <p>No hidden fees. Cancel anytime. Start with a free trial — no credit card required.</p>
+  </div>
+</div>
+
+<!-- PRICING CARDS -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="pricing-grid">
+
+      <!-- Basic -->
+      <div class="pricing-card fade-up">
+        <div class="plan-icon">🌱</div>
+        <div class="plan-name">Basic</div>
+        <div class="plan-desc">Perfect for individuals getting started with AI</div>
+        <div class="plan-price">
+          <span class="currency">$</span><span class="amount">9</span><span class="period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Access to core AI tools</li>
+          <li><span class="check">✓</span> Limited templates library (50+)</li>
+          <li><span class="check">✓</span> Monthly usage limits</li>
+          <li><span class="check">✓</span> Arabic & English support</li>
+          <li><span class="check">✓</span> Personal dashboard</li>
+          <li><span class="check">✓</span> Email support</li>
+          <li class="disabled"><span class="check">✗</span> Full templates library</li>
+          <li class="disabled"><span class="check">✗</span> Priority processing</li>
+          <li class="disabled"><span class="check">✗</span> Team management</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('signupModal')">Start Free Trial</button>
+      </div>
+
+      <!-- Pro -->
+      <div class="pricing-card featured fade-up fade-up-delay-1">
+        <div class="pricing-badge">⭐ Most Popular</div>
+        <div class="plan-icon">🌸</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-desc">For creators, freelancers, and professionals</div>
+        <div class="plan-price">
+          <span class="currency">$</span><span class="amount">29</span><span class="period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Full access to ALL AI tools</li>
+          <li><span class="check">✓</span> Full templates library (500+)</li>
+          <li><span class="check">✓</span> Faster AI processing</li>
+          <li><span class="check">✓</span> Larger project history</li>
+          <li><span class="check">✓</span> Arabic & English support</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li><span class="check">✓</span> Download & export results</li>
+          <li><span class="check">✓</span> Advanced dashboard</li>
+          <li class="disabled"><span class="check">✗</span> Team management</li>
+        </ul>
+        <button class="btn-plan-featured" onclick="openModal('signupModal')">Subscribe Now</button>
+      </div>
+
+      <!-- Team -->
+      <div class="pricing-card fade-up fade-up-delay-2">
+        <div class="plan-icon">🏢</div>
+        <div class="plan-name">Team / Business</div>
+        <div class="plan-desc">For businesses, agencies, and teams</div>
+        <div class="plan-price">
+          <span class="currency">$</span><span class="amount">79</span><span class="period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> Up to 10 user accounts</li>
+          <li><span class="check">✓</span> Team management dashboard</li>
+          <li><span class="check">✓</span> Company billing & invoices</li>
+          <li><span class="check">✓</span> Priority support (24/7)</li>
+          <li><span class="check">✓</span> Dedicated account manager</li>
+          <li><span class="check">✓</span> Custom usage limits</li>
+          <li><span class="check">✓</span> API access (coming soon)</li>
+          <li><span class="check">✓</span> White-label options</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('signupModal')">Get Started</button>
+      </div>
+    </div>
+
+    <!-- Guarantee -->
+    <div class="text-center mt-32 mb-32">
+      <div class="guarantee-box fade-up">
+        <div class="g-icon">🛡️</div>
+        <h3>7-Day Money-Back Guarantee</h3>
+        <p>Not satisfied? Get a full refund within 7 days of purchase — no questions asked, as long as no significant usage has occurred. We're confident you'll love Sakura AI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Compare Plans</span>
+      <h2 class="section-title">Full <span class="highlight">Feature Comparison</span></h2>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="compare-table fade-up">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Basic</th>
+            <th class="featured-col">Pro 🌸</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Text & Writing AI</td><td><span class="check-yes">✓</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Image & Design AI</td><td><span class="check-yes">✓</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Video AI</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Audio AI</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Code AI</td><td><span class="check-yes">✓</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Data & Analytics AI</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Study & Learning AI</td><td><span class="check-yes">✓</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Business & Productivity AI</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Templates Library</td><td>50+</td><td class="featured-col">500+</td><td>500+</td></tr>
+          <tr><td>Arabic & English Support</td><td><span class="check-yes">✓</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Project History</td><td>30 days</td><td class="featured-col">Unlimited</td><td>Unlimited</td></tr>
+          <tr><td>Priority Processing</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Team Management</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+          <tr><td>Priority Support</td><td>Email</td><td class="featured-col">Priority</td><td>24/7</td></tr>
+          <tr><td>API Access</td><td><span class="check-no">✗</span></td><td class="featured-col"><span class="check-no">✗</span></td><td>Coming Soon</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">FAQ</span>
+      <h2 class="section-title">Pricing <span class="highlight">Questions</span></h2>
+    </div>
+    <div class="faq-list faq-mini">
+      <div class="faq-item">
+        <button class="faq-question">Is there a free trial?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes! We offer a limited free trial for new users. No credit card required to start.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I cancel anytime?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Absolutely. You can cancel your subscription at any time from your dashboard with no penalties.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I upgrade or downgrade my plan?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes, you can change your plan at any time. Upgrades take effect immediately, downgrades at the next billing cycle.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What payment methods do you accept?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">We accept all major credit cards, PayPal, and local payment methods in supported regions.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Is there a refund policy?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes. Refunds are available within 7 days of purchase if no significant usage has occurred. See our <a href="refund.html" style="color:var(--primary-deep)">Refund Policy</a> for details.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner fade-up">
+      <h2>Start creating with AI today 🌸</h2>
+      <p>Join thousands of users already using Sakura AI. Free trial, no credit card needed.</p>
+      <button class="btn-white" onclick="openModal('signupModal')"><i class="fas fa-rocket"></i> Start Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><div class="logo-icon">🌸</div>Sakura <span class="brand">AI</span></div>
+        <p>All AI tools. One beautiful platform.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><ul><li><a href="index.html">Home</a></li><li><a href="tools.html">AI Tools</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="templates.html">Templates</a></li><li><a href="dashboard.html">Dashboard</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund Policy</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Sakura AI. All rights reserved. 🌸</p>
+      <div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refund.html">Refund</a></div>
+    </div>
+  </div>
+</footer>
+
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Welcome Back</h2><p>Log in to your Sakura AI account</p></div>
+    <form class="auth-form">
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com" required /></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password" required /></div>
+      <button type="submit" class="btn-submit">Log In</button>
+    </form>
+    <div class="modal-footer">Don't have an account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
+  </div>
+</div>
+
+<div id="signupModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Start Free Trial</h2><p>No credit card required</p></div>
+    <form class="auth-form">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="First name" required /></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name" required /></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com" required /></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Create a password" required /></div>
+      <button type="submit" class="btn-submit">Create Free Account 🌸</button>
+    </form>
+    <div class="modal-footer">Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

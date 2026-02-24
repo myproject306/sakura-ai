@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Tools — Sakura AI</title>
+  <meta name="description" content="Browse all AI tools organized by category. Writing, Image, Video, Audio, Code, Data, Study, and Business AI tools." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .category-section { padding: 60px 0 0; }
+    .category-section:last-of-type { padding-bottom: 60px; }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+    .category-emoji { font-size: 36px; }
+    .category-header h2 { font-size: 24px; font-weight: 800; color: var(--dark); }
+    .category-header p { font-size: 14px; color: var(--gray); margin-top: 2px; }
+    .tool-items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .tool-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .tool-item:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-3px);
+    }
+    .tool-item-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--secondary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .tool-item:hover .tool-item-icon { background: var(--gradient-pink); }
+    .tool-item-info h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .tool-item-info p { font-size: 12px; color: var(--gray); line-height: 1.5; }
+    .tool-item-actions { margin-top: 10px; display: flex; gap: 8px; }
+    .btn-try {
+      padding: 5px 14px;
+      background: var(--gradient-pink);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .btn-try:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .btn-template-sm {
+      padding: 5px 14px;
+      background: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .btn-template-sm:hover { background: var(--secondary); color: var(--primary-deep); }
+    .tools-sidebar {
+      position: sticky;
+      top: 90px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .tools-sidebar h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar-cat-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      transition: var(--transition);
+      margin-bottom: 4px;
+    }
+    .sidebar-cat-link:hover { background: var(--secondary); color: var(--primary-deep); }
+    .tools-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .tools-layout { grid-template-columns: 1fr; }
+      .tools-sidebar { display: none; }
+      .tool-items-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .tool-items-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      Sakura <span class="brand">AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">AI Tools</a></li>
+      <li><a href="templates.html">Templates</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openModal('loginModal')">Log In</button>
+      <button class="btn-primary" onclick="openModal('signupModal')">Sign Up Free</button>
+      <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <span class="section-tag">50+ AI Tools</span>
+    <h1>All AI Tools, <span class="highlight">One Platform</span></h1>
+    <p>Browse our complete library of AI tools organized by category. Find exactly what you need in seconds.</p>
+  </div>
+</div>
+
+<!-- TOOLS CONTENT -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="tools-layout">
+
+      <!-- Sidebar -->
+      <aside class="tools-sidebar">
+        <h4>Categories</h4>
+        <a href="#writing" class="sidebar-cat-link">✍️ Text & Writing</a>
+        <a href="#image" class="sidebar-cat-link">🎨 Image & Design</a>
+        <a href="#video" class="sidebar-cat-link">🎥 Video AI</a>
+        <a href="#audio" class="sidebar-cat-link">🎧 Audio AI</a>
+        <a href="#code" class="sidebar-cat-link">💻 Code AI</a>
+        <a href="#data" class="sidebar-cat-link">📊 Data & Analytics</a>
+        <a href="#study" class="sidebar-cat-link">📚 Study & Learning</a>
+        <a href="#business" class="sidebar-cat-link">🧠 Business & Productivity</a>
+        <a href="#specialized" class="sidebar-cat-link">🎯 Specialized AI</a>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <button class="btn-primary" style="width:100%;" onclick="openModal('signupModal')">
+            🌸 Sign Up Free
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div>
+
+        <!-- ── Writing ── -->
+        <div class="category-section" id="writing">
+          <div class="category-header">
+            <span class="category-emoji">✍️</span>
+            <div>
+              <h2>Text & Writing AI</h2>
+              <p>Create professional content in Arabic & English</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📝</div>
+              <div class="tool-item-info">
+                <h4>Article Writer</h4>
+                <p>Generate full blog posts and articles on any topic</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">📧</div>
+              <div class="tool-item-info">
+                <h4>Email Writer</h4>
+                <p>Professional emails, follow-ups, and newsletters</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📱</div>
+              <div class="tool-item-info">
+                <h4>Social Media Posts</h4>
+                <p>Engaging posts for Instagram, Twitter, LinkedIn</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🔄</div>
+              <div class="tool-item-info">
+                <h4>Text Summarizer</h4>
+                <p>Summarize long documents and articles instantly</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">✨</div>
+              <div class="tool-item-info">
+                <h4>Text Rewriter</h4>
+                <p>Rewrite and improve any text with AI</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">🎯</div>
+              <div class="tool-item-info">
+                <h4>Marketing Copy</h4>
+                <p>Ad copy, product descriptions, and marketing ideas</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Image ── -->
+        <div class="category-section" id="image">
+          <div class="category-header">
+            <span class="category-emoji">🎨</span>
+            <div>
+              <h2>Image & Design AI</h2>
+              <p>Generate and edit stunning visuals with AI</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🖼️</div>
+              <div class="tool-item-info">
+                <h4>Text to Image</h4>
+                <p>Generate beautiful images from text descriptions</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🖌️</div>
+              <div class="tool-item-info">
+                <h4>Photo Enhancer</h4>
+                <p>Enhance and upscale photos with AI</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📐</div>
+              <div class="tool-item-info">
+                <h4>Social Media Designer</h4>
+                <p>Create posts, stories, and banners instantly</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🏷️</div>
+              <div class="tool-item-info">
+                <h4>Logo Generator</h4>
+                <p>Generate unique logos and brand identities</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🎭</div>
+              <div class="tool-item-info">
+                <h4>Background Remover</h4>
+                <p>Remove backgrounds from images in one click</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">🖼️</div>
+              <div class="tool-item-info">
+                <h4>Poster Maker</h4>
+                <p>Design professional posters and flyers</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Video ── -->
+        <div class="category-section" id="video">
+          <div class="category-header">
+            <span class="category-emoji">🎥</span>
+            <div>
+              <h2>Video AI</h2>
+              <p>Create and edit videos with the power of AI</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🎬</div>
+              <div class="tool-item-info">
+                <h4>Text to Video</h4>
+                <p>Turn text scripts into engaging videos automatically</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">✂️</div>
+              <div class="tool-item-info">
+                <h4>Smart Video Editor</h4>
+                <p>AI-powered editing, cuts, and transitions</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📱</div>
+              <div class="tool-item-info">
+                <h4>Short Clip Generator</h4>
+                <p>Extract viral short clips from long videos</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📋</div>
+              <div class="tool-item-info">
+                <h4>Script Writer</h4>
+                <p>Generate video scripts and storyboards</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Audio ── -->
+        <div class="category-section" id="audio">
+          <div class="category-header">
+            <span class="category-emoji">🎧</span>
+            <div>
+              <h2>Audio AI</h2>
+              <p>Transform text to speech and enhance audio quality</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🔊</div>
+              <div class="tool-item-info">
+                <h4>Text to Speech</h4>
+                <p>Convert text to natural-sounding voice in Arabic & English</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🎙️</div>
+              <div class="tool-item-info">
+                <h4>Speech to Text</h4>
+                <p>Transcribe audio and video files accurately</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">🔇</div>
+              <div class="tool-item-info">
+                <h4>Noise Remover</h4>
+                <p>Remove background noise from audio recordings</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📢</div>
+              <div class="tool-item-info">
+                <h4>Voice-Over Generator</h4>
+                <p>Professional voice-overs for ads and videos</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Code ── -->
+        <div class="category-section" id="code">
+          <div class="category-header">
+            <span class="category-emoji">💻</span>
+            <div>
+              <h2>Code AI</h2>
+              <p>Write, fix, and understand code with AI assistance</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">⚡</div>
+              <div class="tool-item-info">
+                <h4>Code Generator</h4>
+                <p>Generate code in any programming language from description</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🐛</div>
+              <div class="tool-item-info">
+                <h4>Bug Fixer</h4>
+                <p>Detect and fix bugs in your code automatically</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📖</div>
+              <div class="tool-item-info">
+                <h4>Code Explainer</h4>
+                <p>Understand complex code with plain-language explanations</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📄</div>
+              <div class="tool-item-info">
+                <h4>Documentation Writer</h4>
+                <p>Auto-generate documentation for your codebase</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🤖</div>
+              <div class="tool-item-info">
+                <h4>Automation Scripts</h4>
+                <p>Generate scripts to automate repetitive tasks</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Data ── -->
+        <div class="category-section" id="data">
+          <div class="category-header">
+            <span class="category-emoji">📊</span>
+            <div>
+              <h2>Data & Analytics AI</h2>
+              <p>Turn raw data into actionable business insights</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📈</div>
+              <div class="tool-item-info">
+                <h4>Excel / CSV Analyzer</h4>
+                <p>Upload spreadsheets and get instant AI analysis</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">📋</div>
+              <div class="tool-item-info">
+                <h4>Report Generator</h4>
+                <p>Create professional reports and dashboards</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">💡</div>
+              <div class="tool-item-info">
+                <h4>Business Insights</h4>
+                <p>Extract key insights and trends from your data</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">💰</div>
+              <div class="tool-item-info">
+                <h4>Sales Summarizer</h4>
+                <p>Summarize sales data and performance metrics</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Study ── -->
+        <div class="category-section" id="study">
+          <div class="category-header">
+            <span class="category-emoji">📚</span>
+            <div>
+              <h2>Study & Learning AI</h2>
+              <p>Learn faster and smarter with AI-powered study tools</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🎓</div>
+              <div class="tool-item-info">
+                <h4>Lesson Simplifier</h4>
+                <p>Simplify complex topics into easy explanations</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">❓</div>
+              <div class="tool-item-info">
+                <h4>Q&A Generator</h4>
+                <p>Generate practice questions from any study material</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📅</div>
+              <div class="tool-item-info">
+                <h4>Study Plan Creator</h4>
+                <p>Create personalized study plans and schedules</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🔢</div>
+              <div class="tool-item-info">
+                <h4>Step-by-Step Solver</h4>
+                <p>Solve math and science problems with full explanations</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Business ── -->
+        <div class="category-section" id="business">
+          <div class="category-header">
+            <span class="category-emoji">🧠</span>
+            <div>
+              <h2>Business & Productivity AI</h2>
+              <p>Supercharge your professional workflow with AI</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📊</div>
+              <div class="tool-item-info">
+                <h4>Business Plan Writer</h4>
+                <p>Generate comprehensive business plans and strategies</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">🖥️</div>
+              <div class="tool-item-info">
+                <h4>Presentation Builder</h4>
+                <p>Create slide outlines and presentation content</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">📄</div>
+              <div class="tool-item-info">
+                <h4>CV & Resume Writer</h4>
+                <p>Create professional CVs and cover letters</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📋</div>
+              <div class="tool-item-info">
+                <h4>SOP & Workflow Builder</h4>
+                <p>Create standard operating procedures and workflows</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">✉️</div>
+              <div class="tool-item-info">
+                <h4>Formal Email Writer</h4>
+                <p>Write formal business emails and correspondence</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Specialized ── -->
+        <div class="category-section" id="specialized">
+          <div class="category-header">
+            <span class="category-emoji">🎯</span>
+            <div>
+              <h2>Specialized AI</h2>
+              <p>Purpose-built AI tools for specific industries</p>
+            </div>
+          </div>
+          <div class="tool-items-grid">
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">🛒</div>
+              <div class="tool-item-info">
+                <h4>Product Description Writer</h4>
+                <p>Write compelling e-commerce product descriptions</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-1">
+              <div class="tool-item-icon">📣</div>
+              <div class="tool-item-info">
+                <h4>Ad Copy Generator</h4>
+                <p>Create high-converting ads for Facebook, Google, TikTok</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up fade-up-delay-2">
+              <div class="tool-item-icon">💬</div>
+              <div class="tool-item-info">
+                <h4>Customer Support Replies</h4>
+                <p>Generate professional customer support responses</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                </div>
+              </div>
+            </div>
+            <div class="tool-item fade-up">
+              <div class="tool-item-icon">📲</div>
+              <div class="tool-item-info">
+                <h4>Social Media Content Calendar</h4>
+                <p>Plan and generate a full month of social content</p>
+                <div class="tool-item-actions">
+                  <button class="btn-try" onclick="openModal('signupModal')">Try Now</button>
+                  <button class="btn-template-sm" onclick="window.location='templates.html'">Templates</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end main content -->
+    </div><!-- end tools-layout -->
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner fade-up">
+      <h2>Ready to use all these tools? 🌸</h2>
+      <p>Sign up free today and access every AI tool in one beautiful platform.</p>
+      <button class="btn-white" onclick="openModal('signupModal')">
+        <i class="fas fa-rocket"></i> Sign Up Free
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Sakura <span class="brand">AI</span>
+        </a>
+        <p>All AI tools. One beautiful platform. Create content, images, videos, audio, code, and insights — all in one place.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
+          <li><a href="templates.html">Templates</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms & Conditions</a></li>
+          <li><a href="refund.html">Refund Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>AI Categories</h4>
+        <ul>
+          <li><a href="#writing">✍️ Text & Writing</a></li>
+          <li><a href="#image">🎨 Image & Design</a></li>
+          <li><a href="#video">🎥 Video AI</a></li>
+          <li><a href="#code">💻 Code AI</a></li>
+          <li><a href="#data">📊 Data & Analytics</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Sakura AI. All rights reserved. 🌸</p>
+      <div class="footer-bottom-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="refund.html">Refund</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-logo">
+      <div class="logo-icon" style="width:52px;height:52px;margin:0 auto 12px;background:linear-gradient(145deg,#FF8FAB,#FF4D8D);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,77,141,0.35);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Log in to your Sakura AI account</p>
+    </div>
+    <form class="auth-form">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="btn-submit">Log In</button>
+    </form>
+    <div class="modal-footer">
+      Don't have an account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up free</a>
+    </div>
+  </div>
+</div>
+
+<div id="signupModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
+    <div class="modal-logo">
+      <div class="logo-icon" style="width:52px;height:52px;margin:0 auto 12px;background:linear-gradient(145deg,#FF8FAB,#FF4D8D);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,77,141,0.35);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <h2>Create Free Account</h2>
+      <p>100% free — no credit card required</p>
+    </div>
+    <form class="auth-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="First name" required />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Last name" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Create a password" required />
+      </div>
+      <button type="submit" class="btn-submit">Create Free Account 🌸</button>
+    </form>
+    <div class="modal-footer">
+      Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

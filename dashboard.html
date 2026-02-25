@@ -264,13 +264,73 @@
   const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3001/api' : '/api';
 
+  const IS_DEMO = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
   const token = localStorage.getItem('sakura_token');
 
   // ── Auth check ─────────────────────────
   if (!token) { window.location.href = 'auth.html'; }
 
+  // ── Shared UI updater ──────────────────
+  function populateDashboard(user) {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('dashGreeting').textContent = `${greeting}, ${user.firstName || user.name?.split(' ')[0] || 'there'} 🌸`;
+    document.getElementById('navUserName').textContent  = user.name || user.email;
+    document.getElementById('sidebarName').textContent  = user.name || user.email;
+
+    const planIcons = { free: '🌱', starter: '🌱', pro: '🌸', team: '🏢' };
+    const planNames = { free: 'Free Account', starter: 'Starter Plan', pro: 'Pro Plan', team: 'Team Plan' };
+    document.getElementById('sidebarPlan').textContent = planNames[user.plan] || 'Free Account';
+    document.getElementById('sidebarPlan').style.color = user.plan !== 'free' ? 'var(--primary-deep)' : '';
+    document.getElementById('planNameLg').textContent  = `${planIcons[user.plan] || '🌱'} ${planNames[user.plan] || 'Free'}`;
+
+    const isActive = user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing';
+    if (isActive) {
+      const trialEnd  = user.trialEndsAt ? new Date(user.trialEndsAt).toLocaleDateString() : '';
+      const periodEnd = user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleDateString() : '';
+      document.getElementById('planDetail').textContent = user.subscriptionStatus === 'trialing'
+        ? `Free trial ends ${trialEnd}` : `Renews ${periodEnd}`;
+      document.getElementById('billingBtn').style.display = 'block';
+      document.getElementById('upgradeBtn').style.display = 'none';
+    } else {
+      document.getElementById('subscriptionAlert').style.display = 'flex';
+    }
+    document.getElementById('statCredits').textContent = user.credits ?? '—';
+  }
+
   // ── Init ───────────────────────────────
   (async function init() {
+    // ── Demo mode: use localStorage data directly ──
+    if (IS_DEMO) {
+      try {
+        const user = JSON.parse(localStorage.getItem('sakura_user') || '{}');
+        if (!user.email) { handleLogout(); return; }
+        populateDashboard(user);
+        // Demo stats
+        document.getElementById('statProjects').textContent    = '0';
+        document.getElementById('statGenerations').textContent = '0';
+        document.getElementById('statFavorites').textContent   = '0';
+        // Demo usage
+        document.getElementById('tokenUsageText').textContent  = '0 / 50,000';
+        document.getElementById('tokenBar').style.width        = '0%';
+        document.getElementById('creditUsageText').textContent = '0 / 100 used';
+        document.getElementById('creditBar').style.width       = '0%';
+        // Empty projects
+        document.getElementById('projectsList').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📁</div>
+            <p>No projects yet.<br>Use an AI tool to create your first project!</p>
+            <a href="tools.html" class="btn-primary-lg" style="text-decoration:none;display:inline-flex;margin-top:16px;font-size:14px;padding:10px 24px;">
+              <i class="fas fa-robot"></i> Explore AI Tools
+            </a>
+          </div>`;
+      } catch (err) {
+        console.error('Demo dashboard error:', err);
+      }
+      return;
+    }
+
+    // ── Live mode: fetch from API ──
     try {
       const res  = await fetch(`${API_BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
@@ -279,40 +339,7 @@
 
       const user = data.user;
       localStorage.setItem('sakura_user', JSON.stringify(user));
-
-      // Update UI with user data
-      const hour = new Date().getHours();
-      const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-      document.getElementById('dashGreeting').textContent = `${greeting}, ${user.firstName || user.name?.split(' ')[0] || 'there'} 🌸`;
-      document.getElementById('navUserName').textContent  = user.name || user.email;
-      document.getElementById('sidebarName').textContent  = user.name || user.email;
-
-      // Plan display
-      const planIcons = { free: '🌱', starter: '🌱', pro: '🌸', team: '🏢' };
-      const planNames = { free: 'Free Account', starter: 'Starter Plan', pro: 'Pro Plan', team: 'Team Plan' };
-      document.getElementById('sidebarPlan').textContent = planNames[user.plan] || 'Free Account';
-      document.getElementById('sidebarPlan').style.color = user.plan !== 'free' ? 'var(--primary-deep)' : '';
-
-      // Plan status card
-      document.getElementById('planNameLg').textContent = `${planIcons[user.plan] || '🌱'} ${planNames[user.plan] || 'Free'}`;
-
-      const isActive = user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing';
-      if (isActive) {
-        const periodEnd = user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleDateString() : '';
-        const trialEnd  = user.trialEndsAt ? new Date(user.trialEndsAt).toLocaleDateString() : '';
-        document.getElementById('planDetail').textContent = user.subscriptionStatus === 'trialing'
-          ? `Free trial ends ${trialEnd}`
-          : `Renews ${periodEnd}`;
-        document.getElementById('billingBtn').style.display = 'block';
-        document.getElementById('upgradeBtn').style.display = 'none';
-      } else {
-        document.getElementById('subscriptionAlert').style.display = 'flex';
-      }
-
-      // Credits stat
-      document.getElementById('statCredits').textContent = user.credits;
-
-      // Load stats and usage
+      populateDashboard(user);
       loadStats();
       loadUsage();
       loadRecentProjects();

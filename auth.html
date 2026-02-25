@@ -254,6 +254,30 @@
     ? 'http://localhost:3001/api'
     : '/api';
 
+  // ── Demo mode when not on localhost (GitHub Pages) ──
+  const IS_DEMO = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
+  function demoAuth(email, firstName, lastName) {
+    const name = (firstName + ' ' + (lastName || '')).trim() || email.split('@')[0];
+    const demoUser = {
+      id: 'demo-' + Date.now(),
+      email: email,
+      firstName: firstName || email.split('@')[0],
+      lastName: lastName || '',
+      name: name,
+      plan: 'pro',
+      credits: 100,
+      subscriptionStatus: 'trialing',
+      trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+    const fakeToken = 'demo_' + btoa(unescape(encodeURIComponent(JSON.stringify({ id: demoUser.id, email }))));
+    localStorage.setItem('sakura_token',    fakeToken);
+    localStorage.setItem('sakura_refresh',  'demo_refresh_' + Date.now());
+    localStorage.setItem('sakura_user',     JSON.stringify(demoUser));
+    localStorage.setItem('sakura_demo_mode','true');
+  }
+
   // ── Check if already logged in ──
   (function checkAuth() {
     const token = localStorage.getItem('sakura_token');
@@ -327,6 +351,21 @@
     const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
 
+    // ── Demo mode (GitHub Pages — no backend) ──
+    if (IS_DEMO) {
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters.');
+        setLoading('login', false);
+        return;
+      }
+      demoAuth(email, email.split('@')[0], '');
+      showSuccess('✅ Login successful! Redirecting to dashboard...');
+      const redirect = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+      setTimeout(() => { window.location.href = redirect; }, 900);
+      setLoading('login', false);
+      return;
+    }
+
     try {
       const res  = await fetch(`${API_BASE}/auth/login`, {
         method:  'POST',
@@ -366,6 +405,15 @@
 
     if (password.length < 8) {
       showError('Password must be at least 8 characters.');
+      setLoading('signup', false);
+      return;
+    }
+
+    // ── Demo mode (GitHub Pages — no backend) ──
+    if (IS_DEMO) {
+      demoAuth(email, firstName, lastName);
+      showSuccess('✅ Account created! Redirecting to dashboard...');
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
       setLoading('signup', false);
       return;
     }

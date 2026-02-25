@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Tool — Sakura AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tool-page { margin-top: 70px; min-height: calc(100vh - 70px); background: var(--accent); }
+    .tool-header {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .tool-header-inner { display: flex; align-items: center; gap: 16px; }
+    .tool-header-icon {
+      width: 52px; height: 52px; background: var(--gradient-pink);
+      border-radius: var(--radius-md); display: flex; align-items: center;
+      justify-content: center; font-size: 24px; flex-shrink: 0;
+    }
+    .tool-header-info h1 { font-size: 22px; font-weight: 800; color: var(--dark); }
+    .tool-header-info p  { font-size: 13px; color: var(--gray); margin-top: 2px; }
+    .tool-header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 28px 0 48px;
+    }
+    /* Input Panel */
+    .tool-input-panel {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px; height: fit-content;
+    }
+    .tool-input-panel h3 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .tool-field { margin-bottom: 18px; }
+    .tool-field label { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 7px; }
+    .tool-field input,
+    .tool-field select,
+    .tool-field textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 13px; font-family: inherit;
+      color: var(--dark); background: var(--white); transition: var(--transition); outline: none;
+    }
+    .tool-field input:focus,
+    .tool-field select:focus,
+    .tool-field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(247,183,200,0.2); }
+    .tool-field textarea { resize: vertical; min-height: 100px; }
+    .tool-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .char-count { font-size: 11px; color: var(--light-gray); text-align: right; margin-top: 4px; }
+    .btn-run {
+      width: 100%; padding: 14px; background: var(--gradient-pink); border: none;
+      border-radius: var(--radius-full); font-size: 15px; font-weight: 700;
+      color: white; cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit; margin-top: 8px;
+    }
+    .btn-run:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-run:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    /* Output Panel */
+    .tool-output-panel {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px;
+      display: flex; flex-direction: column; min-height: 500px;
+    }
+    .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .output-header h3 { font-size: 15px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 8px; }
+    .output-actions { display: flex; gap: 8px; }
+    .btn-output-action {
+      padding: 7px 14px; border-radius: var(--radius-full); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; gap: 5px; font-family: inherit;
+    }
+    .btn-output-action.outline { background: transparent; border: 1.5px solid var(--border); color: var(--gray); }
+    .btn-output-action.outline:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--secondary); }
+    .btn-output-action.pink { background: var(--gradient-pink); border: none; color: white; }
+    .btn-output-action.pink:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    /* Output states */
+    .output-empty {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; color: var(--light-gray);
+    }
+    .output-empty .empty-icon { font-size: 52px; margin-bottom: 14px; opacity: 0.5; }
+    .output-empty p { font-size: 14px; line-height: 1.7; }
+    .output-loading {
+      flex: 1; display: none; flex-direction: column; align-items: center;
+      justify-content: center; gap: 16px;
+    }
+    .output-loading .loading-dots { display: flex; gap: 6px; }
+    .output-loading .dot {
+      width: 10px; height: 10px; background: var(--primary);
+      border-radius: 50%; animation: dotBounce 1.2s infinite;
+    }
+    .output-loading .dot:nth-child(2) { animation-delay: 0.2s; }
+    .output-loading .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBounce { 0%,80%,100%{transform:scale(0.8);opacity:0.5} 40%{transform:scale(1.2);opacity:1} }
+    .output-loading p { font-size: 14px; color: var(--gray); }
+    .output-content {
+      flex: 1; display: none; flex-direction: column;
+    }
+    .output-text {
+      flex: 1; background: var(--accent); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px; font-size: 14px;
+      color: var(--dark); line-height: 1.8; white-space: pre-wrap;
+      overflow-y: auto; max-height: 480px; min-height: 200px;
+    }
+    .output-text.code-output {
+      font-family: 'Courier New', monospace; font-size: 13px;
+      background: #1e1e2e; color: #cdd6f4; border-color: #313244;
+    }
+    .output-image { max-width: 100%; border-radius: var(--radius-md); display: block; margin: 0 auto; }
+    .output-audio { width: 100%; margin-top: 12px; }
+    .output-meta {
+      display: flex; gap: 16px; margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .output-meta-item { font-size: 11px; color: var(--light-gray); display: flex; align-items: center; gap: 4px; }
+    /* Usage meter */
+    .usage-bar-wrap { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .usage-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-bottom: 6px; }
+    .usage-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .usage-bar-fill { height: 100%; background: var(--gradient-pink); border-radius: 3px; transition: width 0.5s ease; }
+    /* Improve modal */
+    .improve-modal {
+      position: fixed; inset: 0; background: rgba(44,44,44,0.5);
+      backdrop-filter: blur(4px); z-index: 2000; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .improve-modal.open { display: flex; }
+    .improve-box {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 32px; max-width: 480px; width: 100%;
+      animation: modalIn 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .improve-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+    @media (max-width: 900px) {
+      .tool-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .tool-header-actions .btn-output-action { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      Sakura <span class="brand">AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="dashboard.html" class="btn-ghost" style="text-decoration:none;" id="navUserName">Dashboard</a>
+      <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<div class="tool-page">
+  <!-- Tool Header -->
+  <div class="tool-header">
+    <div class="container">
+      <div class="tool-header-inner">
+        <div class="tool-header-icon" id="toolHeaderIcon">🤖</div>
+        <div class="tool-header-info">
+          <h1 id="toolHeaderTitle">AI Tool</h1>
+          <p id="toolHeaderDesc">Powered by Sakura AI</p>
+        </div>
+        <div class="tool-header-actions">
+          <a href="tools.html" class="btn-output-action outline" style="text-decoration:none;">
+            <i class="fas fa-arrow-left"></i> All Tools
+          </a>
+          <a href="dashboard.html" class="btn-output-action outline" style="text-decoration:none;">
+            <i class="fas fa-folder"></i> My Projects
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool Layout -->
+  <div class="container">
+    <div class="tool-layout">
+
+      <!-- Input Panel -->
+      <div class="tool-input-panel">
+        <h3><i class="fas fa-sliders-h" style="color:var(--primary-deep)"></i> Input</h3>
+        <div id="toolInputFields">
+          <!-- Dynamically populated based on tool -->
+        </div>
+
+        <!-- Usage meter -->
+        <div class="usage-bar-wrap" id="usageMeter">
+          <div class="usage-bar-label">
+            <span>Monthly Usage</span>
+            <span id="usageText">— / —</span>
+          </div>
+          <div class="usage-bar"><div class="usage-bar-fill" id="usageBarFill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="tool-output-panel">
+        <div class="output-header">
+          <h3><i class="fas fa-magic" style="color:var(--primary-deep)"></i> Output</h3>
+          <div class="output-actions" id="outputActions" style="display:none;">
+            <button class="btn-output-action outline" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
+            <button class="btn-output-action outline" onclick="openImproveModal()"><i class="fas fa-wand-magic-sparkles"></i> Improve</button>
+            <button class="btn-output-action outline" onclick="regenerate()"><i class="fas fa-redo"></i> Regenerate</button>
+            <button class="btn-output-action pink" onclick="saveProject()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="output-empty" id="outputEmpty">
+          <div class="empty-icon">✨</div>
+          <p>Fill in the fields on the left<br>and click <strong>Generate</strong> to get your AI result.</p>
+        </div>
+
+        <!-- Loading state -->
+        <div class="output-loading" id="outputLoading">
+          <div class="loading-dots">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+          <p id="loadingText">Generating your result...</p>
+        </div>
+
+        <!-- Content state -->
+        <div class="output-content" id="outputContent">
+          <div class="output-text" id="outputText"></div>
+          <div class="output-meta" id="outputMeta"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Improve Modal -->
+<div class="improve-modal" id="improveModal">
+  <div class="improve-box">
+    <h3>✨ Improve Result</h3>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">Tell the AI how to improve the output:</p>
+    <div class="tool-field">
+      <textarea id="improveInstruction" placeholder="e.g. Make it more formal, add more detail, shorten it, translate to Arabic..." rows="4"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn-output-action pink" style="flex:1;padding:12px;" onclick="submitImprove()">
+        <i class="fas fa-wand-magic-sparkles"></i> Improve
+      </button>
+      <button class="btn-output-action outline" style="flex:1;padding:12px;" onclick="document.getElementById('improveModal').classList.remove('open')">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api'
+    : '/api';
+
+  // ── State ──────────────────────────────
+  let currentTool     = null;
+  let currentCategory = null;
+  let currentProjectId = null;
+  let currentOutput   = null;
+  let authToken       = localStorage.getItem('sakura_token');
+
+  // ── Tool Definitions ───────────────────
+  const TOOLS = {
+    'article-writer':       { icon:'📝', title:'Article Writer',       desc:'Generate full blog posts and articles', category:'writing',  fields:[{id:'topic',label:'Topic',type:'text',placeholder:'e.g. The future of AI in healthcare'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Healthcare professionals'},{id:'tone',label:'Tone',type:'select',options:['Professional','Casual','Academic','Conversational']},{id:'length',label:'Word Count',type:'select',options:['500','800','1200','2000']}] },
+    'email-writer':         { icon:'📧', title:'Email Writer',          desc:'Write professional emails', category:'writing',  fields:[{id:'recipient',label:'Recipient',type:'text',placeholder:'e.g. Client, Manager, Team'},{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Project update, Meeting request'},{id:'keyPoints',label:'Key Points',type:'textarea',placeholder:'What should the email cover?'},{id:'tone',label:'Tone',type:'select',options:['Professional','Formal','Friendly','Urgent']}] },
+    'social-media-posts':   { icon:'📱', title:'Social Media Posts',    desc:'Create engaging social content', category:'writing',  fields:[{id:'platform',label:'Platform',type:'select',options:['Instagram','Twitter/X','LinkedIn','Facebook','TikTok']},{id:'topic',label:'Topic / Product',type:'text',placeholder:'What is the post about?'},{id:'tone',label:'Tone',type:'select',options:['Engaging','Professional','Humorous','Inspirational']},{id:'goal',label:'Goal',type:'select',options:['Engagement','Brand Awareness','Sales','Education']}] },
+    'text-summarizer':      { icon:'🔄', title:'Text Summarizer',       desc:'Summarize long documents instantly', category:'writing',  fields:[{id:'text',label:'Text to Summarize',type:'textarea',placeholder:'Paste your text here...',rows:8},{id:'length',label:'Summary Length',type:'select',options:['Brief (2-3 sentences)','Medium (1 paragraph)','Detailed (3-5 paragraphs)']}] },
+    'text-rewriter':        { icon:'✨', title:'Text Rewriter',         desc:'Rewrite and improve any text', category:'writing',  fields:[{id:'text',label:'Text to Rewrite',type:'textarea',placeholder:'Paste your text here...',rows:6},{id:'tone',label:'Target Tone',type:'select',options:['Professional','Casual','Academic','Persuasive','Simple']},{id:'goal',label:'Goal',type:'select',options:['Improve clarity','Make it shorter','Make it longer','Fix grammar','Change tone']}] },
+    'marketing-copy':       { icon:'🎯', title:'Marketing Copy',        desc:'High-converting marketing content', category:'writing',  fields:[{id:'product',label:'Product / Service',type:'text',placeholder:'e.g. AI writing tool'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Small business owners'},{id:'mainBenefit',label:'Main Benefit',type:'text',placeholder:'e.g. Save 10 hours per week'},{id:'cta',label:'Call to Action',type:'text',placeholder:'e.g. Start free trial'}] },
+    'code-generator':       { icon:'⚡', title:'Code Generator',        desc:'Generate code in any language', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Rust','Swift','Kotlin','SQL']},{id:'framework',label:'Framework (optional)',type:'text',placeholder:'e.g. React, Django, Express'},{id:'description',label:'What should the code do?',type:'textarea',placeholder:'Describe the function or feature you need...',rows:5}] },
+    'bug-fixer':            { icon:'🐛', title:'Bug Fixer',             desc:'Detect and fix code bugs', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Paste Your Code',type:'textarea',placeholder:'Paste the buggy code here...',rows:10}] },
+    'code-explainer':       { icon:'📖', title:'Code Explainer',        desc:'Understand code in plain language', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Code to Explain',type:'textarea',placeholder:'Paste the code you want explained...',rows:10}] },
+    'business-plan':        { icon:'📊', title:'Business Plan Writer',  desc:'Generate comprehensive business plans', category:'business', fields:[{id:'businessName',label:'Business Name',type:'text',placeholder:'e.g. TechFlow Solutions'},{id:'industry',label:'Industry',type:'text',placeholder:'e.g. SaaS, E-commerce, Healthcare'},{id:'targetMarket',label:'Target Market',type:'text',placeholder:'e.g. Small businesses in the Middle East'},{id:'investment',label:'Initial Investment',type:'text',placeholder:'e.g. $50,000'}] },
+    'cv-resume':            { icon:'📄', title:'CV & Resume Writer',    desc:'Create professional CVs', category:'business', fields:[{id:'jobTitle',label:'Target Job Title',type:'text',placeholder:'e.g. Senior Software Engineer'},{id:'experience',label:'Work Experience',type:'textarea',placeholder:'List your work experience...',rows:4},{id:'skills',label:'Key Skills',type:'text',placeholder:'e.g. Python, React, Project Management'},{id:'education',label:'Education',type:'text',placeholder:'e.g. BSc Computer Science, MIT 2020'},{id:'achievements',label:'Key Achievements',type:'textarea',placeholder:'Your notable achievements...',rows:3}] },
+    'lesson-simplifier':    { icon:'🎓', title:'Lesson Simplifier',     desc:'Simplify complex topics', category:'study',    fields:[{id:'topic',label:'Topic to Explain',type:'text',placeholder:'e.g. Quantum entanglement, Calculus derivatives'},{id:'level',label:'Student Level',type:'select',options:['Elementary','Middle School','High School','University','Adult Learner']}] },
+    'qa-generator':         { icon:'❓', title:'Q&A Generator',         desc:'Generate practice questions', category:'study',    fields:[{id:'topic',label:'Topic / Subject',type:'text',placeholder:'e.g. World War II, Photosynthesis'},{id:'count',label:'Number of Questions',type:'select',options:['5','10','15','20']},{id:'difficulty',label:'Difficulty',type:'select',options:['Easy','Medium','Hard','Mixed']}] },
+    'study-plan':           { icon:'📅', title:'Study Plan Creator',    desc:'Create personalized study plans', category:'study',    fields:[{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Mathematics, IELTS, Programming'},{id:'examDate',label:'Exam / Goal Date',type:'text',placeholder:'e.g. 3 months from now, June 15'},{id:'currentLevel',label:'Current Level',type:'select',options:['Beginner','Intermediate','Advanced']},{id:'hoursPerDay',label:'Hours Available Per Day',type:'select',options:['1','2','3','4','5+']}] },
+    'text-to-speech':       { icon:'🔊', title:'Text to Speech',        desc:'Convert text to natural audio', category:'audio',   fields:[{id:'text',label:'Text to Convert',type:'textarea',placeholder:'Enter the text you want to convert to speech...',rows:6},{id:'language',label:'Language',type:'select',options:['English','Arabic']},{id:'stability',label:'Voice Stability',type:'select',options:['0.3','0.5','0.7','0.9']}] },
+    'text-to-image':        { icon:'🖼️', title:'Text to Image',         desc:'Generate images from descriptions', category:'image',   fields:[{id:'prompt',label:'Image Description',type:'textarea',placeholder:'Describe the image you want to generate...',rows:4},{id:'style',label:'Style',type:'select',options:['photographic','digital-art','anime','cinematic','fantasy-art','neon-punk','3d-model']},{id:'negativePrompt',label:'Negative Prompt (optional)',type:'text',placeholder:'What to avoid in the image'}] },
+    'excel-csv-analyzer':   { icon:'📈', title:'Data Analyzer',         desc:'Analyze data and get insights', category:'data',    fields:[{id:'data',label:'Paste Your Data (CSV or table)',type:'textarea',placeholder:'Paste your CSV data or table here...',rows:8},{id:'question',label:'What do you want to know?',type:'text',placeholder:'e.g. What are the top trends? Which product sells most?'}] },
+  };
+
+  // ── Init ───────────────────────────────
+  (function init() {
+    if (!authToken) {
+      window.location.href = `auth.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const toolId = params.get('tool');
+
+    if (!toolId || !TOOLS[toolId]) {
+      window.location.href = 'tools.html';
+      return;
+    }
+
+    currentTool     = toolId;
+    const tool      = TOOLS[toolId];
+    currentCategory = tool.category;
+
+    // Update header
+    document.title = `${tool.title} — Sakura AI`;
+    document.getElementById('toolHeaderIcon').textContent  = tool.icon;
+    document.getElementById('toolHeaderTitle').textContent = tool.title;
+    document.getElementById('toolHeaderDesc').textContent  = tool.desc;
+
+    // Build input fields
+    buildInputFields(tool.fields);
+
+    // Load usage
+    loadUsage();
+
+    // Set user name in nav
+    const user = JSON.parse(localStorage.getItem('sakura_user') || '{}');
+    if (user.firstName) document.getElementById('navUserName').textContent = user.firstName;
+  })();
+
+  function buildInputFields(fields) {
+    const container = document.getElementById('toolInputFields');
+    let html = '';
+
+    fields.forEach(f => {
+      html += `<div class="tool-field">`;
+      html += `<label for="field_${f.id}">${f.label}</label>`;
+
+      if (f.type === 'select') {
+        html += `<select id="field_${f.id}">`;
+        f.options.forEach(o => { html += `<option value="${o}">${o}</option>`; });
+        html += `</select>`;
+      } else if (f.type === 'textarea') {
+        html += `<textarea id="field_${f.id}" placeholder="${f.placeholder || ''}" rows="${f.rows || 4}"></textarea>`;
+      } else {
+        html += `<input type="text" id="field_${f.id}" placeholder="${f.placeholder || ''}" />`;
+      }
+      html += `</div>`;
+    });
+
+    html += `<button class="btn-run" id="runBtn" onclick="runTool()">
+      <span id="runBtnText"><i class="fas fa-magic"></i> Generate</span>
+      <span id="runBtnLoader" style="display:none;"><i class="fas fa-spinner fa-spin"></i> Generating...</span>
+    </button>`;
+
+    container.innerHTML = html;
+  }
+
+  // ── Run Tool ───────────────────────────
+  async function runTool() {
+    const tool   = TOOLS[currentTool];
+    const params = {};
+
+    // Collect field values
+    tool.fields.forEach(f => {
+      const el = document.getElementById(`field_${f.id}`);
+      if (el) params[f.id] = el.value.trim();
+    });
+
+    // Validate required fields
+    const firstField = tool.fields[0];
+    if (!params[firstField.id]) {
+      showToast(`⚠️ Please fill in the ${firstField.label} field`);
+      return;
+    }
+
+    setRunLoading(true);
+    showOutputLoading();
+
+    try {
+      const isHeavy = ['text-to-image','text-to-speech','logo-generator'].includes(currentTool);
+
+      const res  = await fetch(`${API_BASE}/tools/run`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+        body:    JSON.stringify({ toolName: currentTool, params }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) { window.location.href = 'auth.html'; return; }
+        if (res.status === 403 && data.code === 'SUBSCRIPTION_REQUIRED') {
+          showOutputError('Active subscription required. <a href="pricing.html" style="color:var(--primary-deep)">Upgrade your plan →</a>');
+          return;
+        }
+        if (res.status === 402) {
+          showOutputError('Insufficient credits. <a href="pricing.html" style="color:var(--primary-deep)">Get more credits →</a>');
+          return;
+        }
+        throw new Error(data.error || 'Tool execution failed');
+      }
+
+      if (data.jobId) {
+        pollJobStatus(data.jobId);
+      } else {
+        displayOutput(data.output, data.outputType, data.tokensUsed, data.projectId);
+        loadUsage();
+      }
+
+    } catch (err) {
+      showOutputError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setRunLoading(false);
+    }
+  }
+
+  // ── Poll job status (heavy tools) ──────
+  async function pollJobStatus(jobId) {
+    const maxAttempts = 60;
+    let attempts = 0;
+
+    const poll = async () => {
+      attempts++;
+      try {
+        const res  = await fetch(`${API_BASE}/tools/status/${jobId}`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        const data = await res.json();
+
+        if (data.status === 'completed' && data.result) {
+          displayOutput(data.result.output, data.result.outputType, 0, data.result.projectId);
+          loadUsage();
+          setRunLoading(false);
+        } else if (data.status === 'failed') {
+          showOutputError(data.error || 'Processing failed. Please try again.');
+          setRunLoading(false);
+        } else if (attempts < maxAttempts) {
+          setTimeout(poll, 2000);
+        } else {
+          showOutputError('Processing timed out. Please try again.');
+          setRunLoading(false);
+        }
+      } catch (err) {
+        if (attempts < maxAttempts) setTimeout(poll, 3000);
+        else { showOutputError('Connection error during processing.'); setRunLoading(false); }
+      }
+    };
+    setTimeout(poll, 1500);
+  }
+
+  // ── Display output ─────────────────────
+  function displayOutput(output, outputType, tokensUsed, projectId) {
+    currentOutput    = output;
+    currentProjectId = projectId;
+
+    document.getElementById('outputEmpty').style.display   = 'none';
+    document.getElementById('outputLoading').style.display = 'none';
+    document.getElementById('outputContent').style.display = 'flex';
+    document.getElementById('outputActions').style.display = 'flex';
+
+    const textEl = document.getElementById('outputText');
+
+    if (outputType === 'image') {
+      textEl.innerHTML = `<img src="${output}" class="output-image" alt="Generated image" />`;
+      textEl.classList.remove('code-output');
+    } else if (outputType === 'audio') {
+      textEl.innerHTML = `<p style="margin-bottom:12px;color:var(--gray);font-size:13px;">Your audio is ready:</p><audio controls class="output-audio"><source src="${output}" type="audio/mpeg">Your browser does not support audio.</audio>`;
+      textEl.classList.remove('code-output');
+    } else if (outputType === 'code') {
+      textEl.textContent = output;
+      textEl.classList.add('code-output');
+    } else {
+      textEl.textContent = output;
+      textEl.classList.remove('code-output');
+    }
+
+    // Meta info
+    const meta = document.getElementById('outputMeta');
+    meta.innerHTML = '';
+    if (tokensUsed > 0) meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-coins"></i> ${tokensUsed.toLocaleString()} tokens used</span>`;
+    if (projectId)      meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-save"></i> Auto-saved to projects</span>`;
+    meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-clock"></i> ${new Date().toLocaleTimeString()}</span>`;
+  }
+
+  // ── Output state helpers ───────────────
+  function showOutputLoading() {
+    document.getElementById('outputEmpty').style.display   = 'none';
+    document.getElementById('outputLoading').style.display = 'flex';
+    document.getElementById('outputContent').style.display = 'none';
+    document.getElementById('outputActions').style.display = 'none';
+  }
+
+  function showOutputError(msg) {
+    document.getElementById('outputEmpty').style.display   = 'none';
+    document.getElementById('outputLoading').style.display = 'none';
+    document.getElementById('outputContent').style.display = 'flex';
+    document.getElementById('outputActions').style.display = 'none';
+    document.getElementById('outputText').innerHTML = `<div style="color:#DC2626;padding:16px;background:#FEE2E2;border-radius:8px;font-size:14px;line-height:1.7;">⚠️ ${msg}</div>`;
+    document.getElementById('outputText').classList.remove('code-output');
+  }
+
+  function setRunLoading(loading) {
+    const btn    = document.getElementById('runBtn');
+    const text   = document.getElementById('runBtnText');
+    const loader = document.getElementById('runBtnLoader');
+    btn.disabled         = loading;
+    text.style.display   = loading ? 'none'   : 'flex';
+    loader.style.display = loading ? 'flex'   : 'none';
+  }
+
+  // ── Copy output ────────────────────────
+  function copyOutput() {
+    if (!currentOutput) return;
+    navigator.clipboard.writeText(currentOutput).then(() => showToast('✅ Copied to clipboard!'));
+  }
+
+  // ── Save project ───────────────────────
+  async function saveProject() {
+    if (!currentOutput || !currentProjectId) { showToast('⚠️ No output to save'); return; }
+    showToast('✅ Already saved to your projects!');
+  }
+
+  // ── Regenerate ─────────────────────────
+  async function regenerate() {
+    if (!currentProjectId) { runTool(); return; }
+    setRunLoading(true);
+    showOutputLoading();
+    try {
+      const res  = await fetch(`${API_BASE}/tools/regenerate`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+        body:    JSON.stringify({ projectId: currentProjectId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      if (data.jobId) pollJobStatus(data.jobId);
+      else displayOutput(data.output, data.outputType, 0, data.projectId);
+    } catch (err) {
+      showOutputError(err.message || 'Regeneration failed.');
+    } finally {
+      setRunLoading(false);
+    }
+  }
+
+  // ── Improve ────────────────────────────
+  function openImproveModal() {
+    if (!currentOutput) { showToast('⚠️ Generate output first'); return; }
+    document.getElementById('improveModal').classList.add('open');
+  }
+
+  async function submitImprove() {
+    const instruction = document.getElementById('improveInstruction').value.trim();
+    if (!instruction) { showToast('⚠️ Please enter improvement instructions'); return; }
+
+    document.getElementById('improveModal').classList.remove('open');
+    setRunLoading(true);
+    showOutputLoading();
+
+    try {
+      const res  = await fetch(`${API_BASE}/tools/improve`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+        body:    JSON.stringify({ projectId: currentProjectId, instruction }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      displayOutput(data.output, 'text', data.tokensUsed, currentProjectId);
+    } catch (err) {
+      showOutputError(err.message || 'Improvement failed.');
+    } finally {
+      setRunLoading(false);
+    }
+  }
+
+  // ── Load usage ─────────────────────────
+  async function loadUsage() {
+    try {
+      const res  = await fetch(`${API_BASE}/tools/usage`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      document.getElementById('usageText').textContent =
+        `${data.tokens.used.toLocaleString()} / ${data.tokens.limit.toLocaleString()} tokens`;
+      document.getElementById('usageBarFill').style.width = `${data.tokens.percentage}%`;
+
+      if (data.tokens.percentage > 90) {
+        document.getElementById('usageBarFill').style.background = '#EF4444';
+      }
+    } catch (_) {}
+  }
+
+  // Close improve modal on overlay click
+  document.getElementById('improveModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+</script>
+</body>
+</html>

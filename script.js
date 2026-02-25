@@ -1,6 +1,12 @@
 /* ============================================
    Sakura AI - Main JavaScript
+   Production Version
    ============================================ */
+
+// ── API Base ─────────────────────────────
+const SAKURA_API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3001/api'
+  : '/api';
 
 // ── Mobile Nav Toggle ──
 const hamburger = document.querySelector('.hamburger');
@@ -204,183 +210,27 @@ if (contactForm) {
   });
 }
 
-// ── Auto Subdomain Generator ──
-function slugify(val) {
-  return val.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-}
-
-function injectSubdomainField() {
-  document.querySelectorAll('#signupModal .auth-form').forEach(form => {
-    if (form.querySelector('.subdomain-group')) return; // already injected
-
-    const emailGroup = form.querySelector('.form-group:has(input[type="email"])') ||
-                       [...form.querySelectorAll('.form-group')].find(g => g.querySelector('input[type="email"]'));
-    if (!emailGroup) return;
-
-    const subdomainGroup = document.createElement('div');
-    subdomainGroup.className = 'form-group subdomain-group';
-    subdomainGroup.innerHTML = `
-      <label>Your Site Name <span style="font-size:11px;color:var(--gray);font-weight:400;">(choose your subdomain)</span></label>
-      <div class="subdomain-input-wrap">
-        <input type="text" id="siteNameInput" placeholder="myproject" maxlength="30" autocomplete="off" />
-        <span class="subdomain-suffix">.sakura-ai-platform.com</span>
-      </div>
-      <div class="subdomain-preview" id="subdomainPreview" style="display:none;">
-        <span class="subdomain-preview-icon">🌐</span>
-        <span class="subdomain-preview-url" id="subdomainPreviewUrl"></span>
-        <span class="subdomain-status" id="subdomainStatus"></span>
-      </div>
-      <div class="subdomain-hint" id="subdomainHint"></div>
-    `;
-    emailGroup.parentNode.insertBefore(subdomainGroup, emailGroup);
-
-    const input = subdomainGroup.querySelector('#siteNameInput');
-    const preview = subdomainGroup.querySelector('#subdomainPreview');
-    const previewUrl = subdomainGroup.querySelector('#subdomainPreviewUrl');
-    const statusEl = subdomainGroup.querySelector('#subdomainStatus');
-    const hintEl = subdomainGroup.querySelector('#subdomainHint');
-
-    input.addEventListener('input', () => {
-      const raw = input.value.trim();
-      const slug = slugify(raw);
-
-      if (!raw) {
-        preview.style.display = 'none';
-        hintEl.textContent = '';
-        hintEl.className = 'subdomain-hint';
-        return;
-      }
-
-      if (slug.length < 3) {
-        preview.style.display = 'none';
-        hintEl.textContent = '⚠️ Minimum 3 characters required';
-        hintEl.className = 'subdomain-hint hint-warn';
-        return;
-      }
-
-      const fullUrl = `https://${slug}.sakura-ai-platform.com`;
-      previewUrl.textContent = fullUrl;
-      statusEl.textContent = '✅ Available';
-      statusEl.className = 'subdomain-status status-available';
-      preview.style.display = 'flex';
-      hintEl.textContent = '';
-      hintEl.className = 'subdomain-hint';
-
-      // auto-correct input display
-      if (slug !== raw) {
-        input.value = slug;
-      }
-    });
-  });
-}
-
-// Inject on page load
-document.addEventListener('DOMContentLoaded', injectSubdomainField);
-// Also inject when signup modal opens
-const _origOpenModal = window.openModal;
-window.openModal = function(id) {
-  _origOpenModal && _origOpenModal(id);
-  if (id === 'signupModal') setTimeout(injectSubdomainField, 50);
-};
-
-// ── Auth Forms ──
+// ── Auth Forms → redirect to auth page ──
 document.querySelectorAll('.auth-form').forEach(form => {
   form.addEventListener('submit', e => {
     e.preventDefault();
     const modal = form.closest('.modal-overlay');
-    const isLogin = modal && modal.id === 'loginModal';
-
-    if (!isLogin) {
-      // Get subdomain
-      const siteInput = form.querySelector('#siteNameInput');
-      const rawSite = siteInput ? siteInput.value.trim() : '';
-      const slug = rawSite ? slugify(rawSite) : 'mysite';
-      const finalSlug = slug.length >= 3 ? slug : 'mysite';
-      const subdomainUrl = `https://${finalSlug}.sakura-ai-platform.com`;
-
-      // Save to localStorage
-      localStorage.setItem('sakura_subdomain', finalSlug);
-      localStorage.setItem('sakura_subdomain_url', subdomainUrl);
-
-      // Close signup modal
-      if (modal) {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-
-      // Show subdomain success modal
-      setTimeout(() => showSubdomainSuccess(finalSlug, subdomainUrl), 300);
-    } else {
-      showToast('👋 Welcome back to Sakura AI!');
-      if (modal) {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-      }
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
     }
+    window.location.href = 'auth.html';
   });
 });
 
-// ── Subdomain Success Modal ──
-function showSubdomainSuccess(slug, url) {
-  // Remove existing if any
-  const existing = document.getElementById('subdomainSuccessModal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'subdomainSuccessModal';
-  modal.className = 'modal-overlay open';
-  modal.innerHTML = `
-    <div class="modal-box subdomain-success-box">
-      <div class="subdomain-success-header">
-        <div class="subdomain-success-icon">🌸</div>
-        <h2>Your Site is Live!</h2>
-        <p>Welcome to Sakura AI. Your personal site has been created.</p>
-      </div>
-      <div class="subdomain-url-card">
-        <div class="subdomain-url-label">🌐 Your Site URL</div>
-        <div class="subdomain-url-display">
-          <span id="successSubdomainUrl">${url}</span>
-          <button class="btn-copy-url" onclick="copySubdomainUrl('${url}')">
-            <i class="fas fa-copy"></i> Copy
-          </button>
-        </div>
-        <div class="subdomain-live-badge">✅ Live &amp; Active</div>
-      </div>
-      <div class="subdomain-success-actions">
-        <button class="btn-primary" onclick="window.location='dashboard.html'">
-          <i class="fas fa-th-large"></i> Go to Dashboard
-        </button>
-        <button class="btn-outline-pink" onclick="showCustomDomainInfo()">
-          <i class="fas fa-globe"></i> Link Custom Domain
-        </button>
-      </div>
-      <div id="customDomainInfo" class="custom-domain-info" style="display:none;">
-        <h4>🔗 Link Your Custom Domain</h4>
-        <p>Point your domain's CNAME record to <strong>cname.sakura-ai-platform.com</strong> and enter it below:</p>
-        <div class="custom-domain-input-row">
-          <input type="text" placeholder="yourdomain.com" id="customDomainInput" />
-          <button class="btn-primary" onclick="linkCustomDomain()">Connect</button>
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeSubdomainModal()" style="position:absolute;top:16px;right:16px;">✕</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  document.body.style.overflow = 'hidden';
-
-  // Close on overlay click
-  modal.addEventListener('click', e => {
-    if (e.target === modal) closeSubdomainModal();
-  });
-}
-
-function closeSubdomainModal() {
-  const modal = document.getElementById('subdomainSuccessModal');
-  if (modal) {
-    modal.classList.remove('open');
-    setTimeout(() => modal.remove(), 300);
+// ── Try Tool → auth check ──
+function tryTool(toolName) {
+  const token = localStorage.getItem('sakura_token');
+  if (!token) {
+    window.location.href = 'auth.html?tab=signup';
+  } else {
+    window.location.href = 'tools.html';
   }
-  document.body.style.overflow = '';
 }
 
 function copySubdomainUrl(url) {

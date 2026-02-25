@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Sakura AI</title>
+  <meta name="description" content="Sign in or create your Sakura AI account to access 50+ AI tools." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: var(--gradient-hero); min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 40px;
+    }
+    .auth-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 900px;
+      width: 100%;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    /* Left panel */
+    .auth-left {
+      background: linear-gradient(145deg, #FF8FAB 0%, #FF4D8D 100%);
+      padding: 52px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-left::before {
+      content: '🌸';
+      position: absolute;
+      font-size: 220px;
+      opacity: 0.07;
+      bottom: -40px;
+      right: -40px;
+      pointer-events: none;
+    }
+    .auth-left-logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: white; margin-bottom: 40px; }
+    .auth-left-logo .logo-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .auth-left h2 { font-size: 28px; font-weight: 800; margin-bottom: 14px; line-height: 1.3; }
+    .auth-left p  { font-size: 14px; opacity: 0.85; line-height: 1.8; margin-bottom: 32px; }
+    .auth-features { display: flex; flex-direction: column; gap: 14px; }
+    .auth-feature  { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; }
+    .auth-feature-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    /* Right panel */
+    .auth-right { padding: 52px 44px; display: flex; flex-direction: column; justify-content: center; }
+    .auth-tabs { display: flex; gap: 0; margin-bottom: 32px; background: var(--accent); border-radius: var(--radius-full); padding: 4px; }
+    .auth-tab {
+      flex: 1; padding: 10px; border: none; background: transparent;
+      border-radius: var(--radius-full); font-size: 14px; font-weight: 600;
+      color: var(--gray); cursor: pointer; transition: var(--transition); font-family: inherit;
+    }
+    .auth-tab.active { background: var(--white); color: var(--dark); box-shadow: var(--shadow-sm); }
+    .auth-form-panel { display: none; }
+    .auth-form-panel.active { display: block; }
+    .auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .auth-divider span { font-size: 12px; color: var(--light-gray); font-weight: 500; }
+    .btn-google {
+      width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--white); font-size: 14px; font-weight: 600; color: var(--dark);
+      cursor: pointer; transition: var(--transition); display: flex; align-items: center;
+      justify-content: center; gap: 10px; font-family: inherit; margin-bottom: 4px;
+    }
+    .btn-google:hover { border-color: var(--primary); background: var(--secondary); }
+    .btn-google img { width: 18px; height: 18px; }
+    .auth-error {
+      background: #FEE2E2; border: 1px solid #FECACA; border-radius: var(--radius-sm);
+      padding: 10px 14px; font-size: 13px; color: #DC2626; margin-bottom: 16px; display: none;
+    }
+    .auth-success {
+      background: #DCFCE7; border: 1px solid #86EFAC; border-radius: var(--radius-sm);
+      padding: 10px 14px; font-size: 13px; color: #166534; margin-bottom: 16px; display: none;
+    }
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 44px; }
+    .password-toggle {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--light-gray);
+      font-size: 15px; padding: 0;
+    }
+    .plan-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--secondary); color: var(--primary-deep);
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: var(--radius-full); margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    @media (max-width: 768px) {
+      .auth-container { grid-template-columns: 1fr; }
+      .auth-left { display: none; }
+      .auth-right { padding: 36px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      Sakura <span class="brand">AI</span>
+    </a>
+    <div class="nav-actions">
+      <a href="pricing.html" class="btn-ghost" style="text-decoration:none;">View Plans</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-container">
+
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div>
+        <div class="auth-left-logo">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Sakura AI
+        </div>
+        <h2>All AI Tools.<br>One Beautiful Platform.</h2>
+        <p>Join thousands of creators, professionals, and students using Sakura AI to create, build, and grow.</p>
+        <div class="auth-features">
+          <div class="auth-feature"><div class="auth-feature-icon">✍️</div> 50+ AI tools across 8 categories</div>
+          <div class="auth-feature"><div class="auth-feature-icon">⚡</div> Real AI results — no mock outputs</div>
+          <div class="auth-feature"><div class="auth-feature-icon">🌸</div> Arabic & English support</div>
+          <div class="auth-feature"><div class="auth-feature-icon">💾</div> Save & organize all your projects</div>
+          <div class="auth-feature"><div class="auth-feature-icon">🛡️</div> 7-day free trial, cancel anytime</div>
+        </div>
+      </div>
+      <div style="font-size:12px;opacity:0.6;margin-top:32px;">© 2025 Sakura AI. All rights reserved.</div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="auth-right">
+
+      <!-- Plan badge (shown when redirected from pricing) -->
+      <div class="plan-badge" id="planBadge" style="display:none;">
+        <span id="planBadgeIcon">🌸</span>
+        <span id="planBadgeText">Starting your free trial</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Log In</button>
+        <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <!-- Error / Success -->
+      <div class="auth-error"  id="authError"></div>
+      <div class="auth-success" id="authSuccess"></div>
+
+      <!-- ── Login Form ── -->
+      <div class="auth-form-panel active" id="panelLogin">
+        <button class="btn-google" onclick="handleGoogleAuth()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          Continue with Google
+        </button>
+        <div class="auth-divider"><span>or continue with email</span></div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="password-wrap">
+              <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+              <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit" id="loginBtn">
+            <span id="loginBtnText">Log In</span>
+            <span id="loginBtnLoader" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
+          </button>
+        </form>
+        <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--gray);">
+          Don't have an account? <a href="#" onclick="switchTab('signup')" style="color:var(--primary-deep);font-weight:600;">Create one free</a>
+        </div>
+      </div>
+
+      <!-- ── Signup Form ── -->
+      <div class="auth-form-panel" id="panelSignup">
+        <button class="btn-google" onclick="handleGoogleAuth()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          Continue with Google
+        </button>
+        <div class="auth-divider"><span>or sign up with email</span></div>
+        <form id="signupForm" onsubmit="handleSignup(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="signupFirst" placeholder="First name" required autocomplete="given-name" />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="signupLast" placeholder="Last name" required autocomplete="family-name" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label>Password <span style="font-size:11px;color:var(--light-gray);font-weight:400;">(min. 8 characters)</span></label>
+            <div class="password-wrap">
+              <input type="password" id="signupPassword" placeholder="Create a strong password" required minlength="8" autocomplete="new-password" />
+              <button type="button" class="password-toggle" onclick="togglePassword('signupPassword', this)"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit" id="signupBtn">
+            <span id="signupBtnText">🌸 Create Free Account</span>
+            <span id="signupBtnLoader" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
+          </button>
+          <p style="font-size:11px;color:var(--light-gray);text-align:center;margin-top:12px;line-height:1.6;">
+            By creating an account, you agree to our
+            <a href="terms.html" style="color:var(--primary-deep);">Terms</a> and
+            <a href="privacy.html" style="color:var(--primary-deep);">Privacy Policy</a>.
+          </p>
+        </form>
+        <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--gray);">
+          Already have an account? <a href="#" onclick="switchTab('login')" style="color:var(--primary-deep);font-weight:600;">Log in</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Google Sign-In SDK -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="script.js"></script>
+<script>
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api'
+    : '/api';
+
+  // ── Check if already logged in ──
+  (function checkAuth() {
+    const token = localStorage.getItem('sakura_token');
+    if (token) {
+      const redirect = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+      window.location.href = redirect;
+    }
+  })();
+
+  // ── Read URL params ──
+  (function readParams() {
+    const params = new URLSearchParams(window.location.search);
+    const tab    = params.get('tab');
+    const plan   = params.get('plan');
+
+    if (tab === 'signup') switchTab('signup');
+
+    if (plan) {
+      const badge = document.getElementById('planBadge');
+      const icons = { starter: '🌱', pro: '🌸', team: '🏢' };
+      const names = { starter: 'Starter Plan — Free Trial', pro: 'Pro Plan — Free Trial', team: 'Team Plan' };
+      badge.style.display = 'inline-flex';
+      document.getElementById('planBadgeIcon').textContent = icons[plan] || '🌸';
+      document.getElementById('planBadgeText').textContent = names[plan] || 'Starting your free trial';
+      switchTab('signup');
+    }
+  })();
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('panelSignup').classList.toggle('active', tab === 'signup');
+    document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+    clearMessages();
+  }
+
+  function showError(msg)   { const el = document.getElementById('authError');   el.textContent = msg; el.style.display = 'block'; document.getElementById('authSuccess').style.display = 'none'; }
+  function showSuccess(msg) { const el = document.getElementById('authSuccess'); el.textContent = msg; el.style.display = 'block'; document.getElementById('authError').style.display = 'none'; }
+  function clearMessages()  { document.getElementById('authError').style.display = 'none'; document.getElementById('authSuccess').style.display = 'none'; }
+
+  function setLoading(formType, loading) {
+    const btn    = document.getElementById(`${formType}Btn`);
+    const text   = document.getElementById(`${formType}BtnText`);
+    const loader = document.getElementById(`${formType}BtnLoader`);
+    btn.disabled       = loading;
+    text.style.display = loading ? 'none' : 'inline';
+    loader.style.display = loading ? 'inline' : 'none';
+  }
+
+  function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    btn.innerHTML = isText ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+  }
+
+  // ── Save auth data ──
+  function saveAuth(data) {
+    localStorage.setItem('sakura_token',   data.accessToken);
+    localStorage.setItem('sakura_refresh', data.refreshToken);
+    localStorage.setItem('sakura_user',    JSON.stringify(data.user));
+  }
+
+  // ── Handle Login ──
+  async function handleLogin(e) {
+    e.preventDefault();
+    clearMessages();
+    setLoading('login', true);
+
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const res  = await fetch(`${API_BASE}/auth/login`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.error || 'Login failed. Please check your credentials.');
+        return;
+      }
+
+      saveAuth(data);
+      showSuccess('Login successful! Redirecting...');
+
+      const redirect = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+      setTimeout(() => { window.location.href = redirect; }, 800);
+
+    } catch (err) {
+      showError('Connection error. Please check your internet and try again.');
+    } finally {
+      setLoading('login', false);
+    }
+  }
+
+  // ── Handle Signup ──
+  async function handleSignup(e) {
+    e.preventDefault();
+    clearMessages();
+    setLoading('signup', true);
+
+    const firstName = document.getElementById('signupFirst').value.trim();
+    const lastName  = document.getElementById('signupLast').value.trim();
+    const email     = document.getElementById('signupEmail').value.trim();
+    const password  = document.getElementById('signupPassword').value;
+
+    if (password.length < 8) {
+      showError('Password must be at least 8 characters.');
+      setLoading('signup', false);
+      return;
+    }
+
+    try {
+      const res  = await fetch(`${API_BASE}/auth/register`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ firstName, lastName, email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        const msg = data.errors?.[0]?.msg || data.error || 'Registration failed.';
+        showError(msg);
+        return;
+      }
+
+      saveAuth(data);
+
+      // Check if a plan was selected → go to Stripe checkout
+      const plan = new URLSearchParams(window.location.search).get('plan');
+      if (plan) {
+        showSuccess('Account created! Redirecting to checkout...');
+        setTimeout(() => startCheckout(plan, data.accessToken), 800);
+      } else {
+        showSuccess('Account created! Redirecting to dashboard...');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+      }
+
+    } catch (err) {
+      showError('Connection error. Please check your internet and try again.');
+    } finally {
+      setLoading('signup', false);
+    }
+  }
+
+  // ── Google Auth ──
+  async function handleGoogleAuth() {
+    // Initialize Google Sign-In
+    if (typeof google === 'undefined') {
+      showError('Google Sign-In is not available. Please use email/password.');
+      return;
+    }
+
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with actual client ID
+      scope: 'email profile',
+      callback: async (tokenResponse) => {
+        if (tokenResponse.error) {
+          showError('Google authentication failed.');
+          return;
+        }
+
+        // Get user info from Google
+        try {
+          const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          });
+          const userInfo = await userInfoRes.json();
+
+          // Send to backend
+          const res  = await fetch(`${API_BASE}/auth/google`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ idToken: tokenResponse.access_token, googleUser: userInfo }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            showError(data.error || 'Google login failed.');
+            return;
+          }
+
+          saveAuth(data);
+          const plan = new URLSearchParams(window.location.search).get('plan');
+          if (plan) {
+            startCheckout(plan, data.accessToken);
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        } catch (err) {
+          showError('Google authentication error. Please try again.');
+        }
+      },
+    });
+    client.requestAccessToken();
+  }
+
+  // ── Start Stripe Checkout ──
+  async function startCheckout(plan, token) {
+    try {
+      const res  = await fetch(`${API_BASE}/stripe/create-checkout-session`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    } catch (err) {
+      window.location.href = 'dashboard.html';
+    }
+  }
+</script>
+</body>
+</html>

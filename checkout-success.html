@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscription Active — Sakura AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: var(--gradient-hero); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    .success-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 56px 48px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      animation: modalIn 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .success-icon { font-size: 72px; display: block; margin-bottom: 20px; animation: bounceIn 0.7s cubic-bezier(0.4,0,0.2,1); }
+    @keyframes bounceIn { 0%{transform:scale(0.3);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+    .success-card h1 { font-size: 28px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+    .success-card .subtitle { font-size: 15px; color: var(--gray); line-height: 1.7; margin-bottom: 28px; }
+    .plan-info {
+      background: var(--gradient-hero);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .plan-info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .plan-info-row:last-child { margin-bottom: 0; }
+    .plan-info-label { font-size: 13px; color: var(--gray); }
+    .plan-info-value { font-size: 13px; font-weight: 700; color: var(--dark); }
+    .plan-badge-lg {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gradient-pink); color: white;
+      font-size: 13px; font-weight: 700; padding: 5px 16px;
+      border-radius: var(--radius-full);
+    }
+    .success-actions { display: flex; flex-direction: column; gap: 12px; }
+    .btn-dashboard {
+      padding: 14px; background: var(--gradient-pink); border: none;
+      border-radius: var(--radius-full); font-size: 15px; font-weight: 700;
+      color: white; cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit; text-decoration: none;
+    }
+    .btn-dashboard:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-tools {
+      padding: 12px; background: transparent; border: 1.5px solid var(--border);
+      border-radius: var(--radius-full); font-size: 14px; font-weight: 600;
+      color: var(--gray); cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit; text-decoration: none;
+    }
+    .btn-tools:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--secondary); }
+    .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .success-card { position: relative; z-index: 1; }
+    .loading-state { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary-deep); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<canvas class="confetti" id="confettiCanvas"></canvas>
+
+<div class="success-card" id="successCard">
+  <!-- Loading state -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <p style="color:var(--gray);font-size:14px;">Activating your subscription...</p>
+  </div>
+
+  <!-- Success state (shown after verification) -->
+  <div id="successState" style="display:none;">
+    <span class="success-icon">🎉</span>
+    <h1>You're all set! 🌸</h1>
+    <p class="subtitle">Your subscription is now active. Welcome to Sakura AI — let's start creating!</p>
+
+    <div class="plan-info" id="planInfo">
+      <div class="plan-info-row">
+        <span class="plan-info-label">Plan</span>
+        <span class="plan-badge-lg" id="planName">🌸 Pro</span>
+      </div>
+      <div class="plan-info-row">
+        <span class="plan-info-label">Status</span>
+        <span class="plan-info-value" style="color:#22C55E;">✓ Active</span>
+      </div>
+      <div class="plan-info-row">
+        <span class="plan-info-label">Credits</span>
+        <span class="plan-info-value" id="planCredits">200 credits</span>
+      </div>
+      <div class="plan-info-row">
+        <span class="plan-info-label">Next billing</span>
+        <span class="plan-info-value" id="nextBilling">—</span>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <a href="dashboard.html" class="btn-dashboard">
+        <i class="fas fa-th-large"></i> Go to Dashboard
+      </a>
+      <a href="tools.html" class="btn-tools">
+        <i class="fas fa-robot"></i> Explore AI Tools
+      </a>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div id="errorState" style="display:none;">
+    <span class="success-icon">⚠️</span>
+    <h1>Something went wrong</h1>
+    <p class="subtitle">Your payment was processed but we couldn't verify your subscription. Please contact support or check your dashboard.</p>
+    <div class="success-actions">
+      <a href="dashboard.html" class="btn-dashboard">Go to Dashboard</a>
+      <a href="contact.html" class="btn-tools">Contact Support</a>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api'
+    : '/api';
+
+  const PLAN_CREDITS = { starter: 50, pro: 200, team: 1000 };
+  const PLAN_ICONS   = { starter: '🌱', pro: '🌸', team: '🏢' };
+
+  async function verifyCheckout() {
+    const params    = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const plan      = params.get('plan') || 'pro';
+    const token     = localStorage.getItem('sakura_token');
+
+    if (!token) {
+      window.location.href = 'auth.html';
+      return;
+    }
+
+    try {
+      // Fetch updated user data to confirm subscription is active
+      const res  = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error('Failed to verify');
+
+      const user = data.user;
+
+      // Update stored user
+      localStorage.setItem('sakura_user', JSON.stringify(user));
+
+      // Show success
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('successState').style.display = 'block';
+
+      // Populate plan info
+      const activePlan = user.plan || plan;
+      document.getElementById('planName').textContent = `${PLAN_ICONS[activePlan] || '🌸'} ${activePlan.charAt(0).toUpperCase() + activePlan.slice(1)}`;
+      document.getElementById('planCredits').textContent = `${PLAN_CREDITS[activePlan] || 100} credits/month`;
+
+      if (user.currentPeriodEnd) {
+        document.getElementById('nextBilling').textContent = new Date(user.currentPeriodEnd).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      } else if (user.trialEndsAt) {
+        document.getElementById('nextBilling').textContent = `Trial ends ${new Date(user.trialEndsAt).toLocaleDateString()}`;
+      }
+
+      // Launch confetti
+      launchConfetti();
+
+      // Auto-redirect after 8 seconds
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 8000);
+
+    } catch (err) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+    }
+  }
+
+  // ── Confetti ──────────────────────────
+  function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx    = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors  = ['#FF8FAB', '#FF4D8D', '#FADADD', '#F7B7C8', '#FFD6E0', '#fff'];
+    const pieces  = Array.from({ length: 120 }, () => ({
+      x:    Math.random() * canvas.width,
+      y:    Math.random() * -canvas.height,
+      w:    6 + Math.random() * 8,
+      h:    10 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speed: 2 + Math.random() * 4,
+      angle: Math.random() * 360,
+      spin:  (Math.random() - 0.5) * 4,
+    }));
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.angle * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+        p.y     += p.speed;
+        p.angle += p.spin;
+        if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
+      });
+      frame++;
+      if (frame < 300) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    draw();
+  }
+
+  verifyCheckout();
+</script>
+</body>
+</html>

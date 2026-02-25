@@ -45,9 +45,9 @@
       <li><a href="faq.html">FAQ</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="nav-actions">
-      <button class="btn-ghost" onclick="openModal('loginModal')">Log In</button>
-      <button class="btn-primary" onclick="openModal('signupModal')">Start Free Trial</button>
+    <div class="nav-actions" id="navActions">
+      <a href="auth.html" class="btn-ghost" style="text-decoration:none;">Log In</a>
+      <a href="auth.html?tab=signup" class="btn-primary" style="text-decoration:none;">Start Free Trial</a>
       <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
     </div>
   </div>
@@ -66,71 +66,13 @@
   <div class="container">
     <div class="pricing-grid">
 
-      <!-- Basic -->
-      <div class="pricing-card fade-up">
-        <div class="plan-icon">🌱</div>
-        <div class="plan-name">Basic</div>
-        <div class="plan-desc">Perfect for individuals getting started with AI</div>
-        <div class="plan-price">
-          <span class="currency">$</span><span class="amount">9</span><span class="period">/month</span>
+      <!-- Prices loaded dynamically from Stripe -->
+      <div id="pricingCards" style="display:contents;">
+        <!-- Loading state -->
+        <div class="pricing-card fade-up" style="grid-column:1/-1;text-align:center;padding:48px;">
+          <div style="font-size:32px;margin-bottom:12px;">🌸</div>
+          <p style="color:var(--gray);">Loading plans...</p>
         </div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span> Access to core AI tools</li>
-          <li><span class="check">✓</span> Limited templates library (50+)</li>
-          <li><span class="check">✓</span> Monthly usage limits</li>
-          <li><span class="check">✓</span> Arabic & English support</li>
-          <li><span class="check">✓</span> Personal dashboard</li>
-          <li><span class="check">✓</span> Email support</li>
-          <li class="disabled"><span class="check">✗</span> Full templates library</li>
-          <li class="disabled"><span class="check">✗</span> Priority processing</li>
-          <li class="disabled"><span class="check">✗</span> Team management</li>
-        </ul>
-        <button class="btn-plan" onclick="openModal('signupModal')">Start Free Trial</button>
-      </div>
-
-      <!-- Pro -->
-      <div class="pricing-card featured fade-up fade-up-delay-1">
-        <div class="pricing-badge">⭐ Most Popular</div>
-        <div class="plan-icon">🌸</div>
-        <div class="plan-name">Pro</div>
-        <div class="plan-desc">For creators, freelancers, and professionals</div>
-        <div class="plan-price">
-          <span class="currency">$</span><span class="amount">29</span><span class="period">/month</span>
-        </div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span> Full access to ALL AI tools</li>
-          <li><span class="check">✓</span> Full templates library (500+)</li>
-          <li><span class="check">✓</span> Faster AI processing</li>
-          <li><span class="check">✓</span> Larger project history</li>
-          <li><span class="check">✓</span> Arabic & English support</li>
-          <li><span class="check">✓</span> Priority support</li>
-          <li><span class="check">✓</span> Download & export results</li>
-          <li><span class="check">✓</span> Advanced dashboard</li>
-          <li class="disabled"><span class="check">✗</span> Team management</li>
-        </ul>
-        <button class="btn-plan-featured" onclick="openModal('signupModal')">Subscribe Now</button>
-      </div>
-
-      <!-- Team -->
-      <div class="pricing-card fade-up fade-up-delay-2">
-        <div class="plan-icon">🏢</div>
-        <div class="plan-name">Team / Business</div>
-        <div class="plan-desc">For businesses, agencies, and teams</div>
-        <div class="plan-price">
-          <span class="currency">$</span><span class="amount">79</span><span class="period">/month</span>
-        </div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span> Everything in Pro</li>
-          <li><span class="check">✓</span> Up to 10 user accounts</li>
-          <li><span class="check">✓</span> Team management dashboard</li>
-          <li><span class="check">✓</span> Company billing & invoices</li>
-          <li><span class="check">✓</span> Priority support (24/7)</li>
-          <li><span class="check">✓</span> Dedicated account manager</li>
-          <li><span class="check">✓</span> Custom usage limits</li>
-          <li><span class="check">✓</span> API access (coming soon)</li>
-          <li><span class="check">✓</span> White-label options</li>
-        </ul>
-        <button class="btn-plan" onclick="openModal('signupModal')">Get Started</button>
       </div>
     </div>
 
@@ -222,7 +164,9 @@
     <div class="cta-banner fade-up">
       <h2>Start creating with AI today 🌸</h2>
       <p>Join thousands of users already using Sakura AI. Free trial, no credit card needed.</p>
-      <button class="btn-white" onclick="openModal('signupModal')"><i class="fas fa-rocket"></i> Start Free Trial</button>
+      <a href="auth.html?tab=signup" class="btn-white" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:white;border-radius:9999px;font-size:15px;font-weight:700;color:var(--primary-deep);box-shadow:var(--shadow-md);transition:var(--transition);">
+        <i class="fas fa-rocket"></i> Start Free Trial
+      </a>
     </div>
   </div>
 </section>
@@ -251,36 +195,128 @@
   </div>
 </footer>
 
-<div id="loginModal" class="modal-overlay">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
-    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Welcome Back</h2><p>Log in to your Sakura AI account</p></div>
-    <form class="auth-form">
-      <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com" required /></div>
-      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password" required /></div>
-      <button type="submit" class="btn-submit">Log In</button>
-    </form>
-    <div class="modal-footer">Don't have an account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
-  </div>
-</div>
-
-<div id="signupModal" class="modal-overlay">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
-    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Start Free Trial</h2><p>No credit card required</p></div>
-    <form class="auth-form">
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="First name" required /></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name" required /></div>
-      </div>
-      <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com" required /></div>
-      <div class="form-group"><label>Password</label><input type="password" placeholder="Create a password" required /></div>
-      <button type="submit" class="btn-submit">Create Free Account 🌸</button>
-    </form>
-    <div class="modal-footer">Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a></div>
-  </div>
-</div>
-
 <script src="script.js"></script>
+<script>
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api' : '/api';
+
+  const PLAN_FEATURES = {
+    starter: ['Access to core AI tools','50+ templates library','500K tokens/month','50 credits/month','Arabic & English support','Personal dashboard','Email support'],
+    pro:     ['Full access to ALL AI tools','500+ templates library','2M tokens/month','200 credits/month','Faster AI processing','Priority support','Download & export results','Advanced dashboard'],
+    team:    ['Everything in Pro','Up to 10 user accounts','10M tokens/month','1,000 credits/month','Team management dashboard','Company billing & invoices','Priority support (24/7)','Dedicated account manager','API access (coming soon)'],
+  };
+  const PLAN_DISABLED = {
+    starter: ['Full templates library','Priority processing','Team management'],
+    pro:     ['Team management'],
+    team:    [],
+  };
+  const PLAN_ICONS = { starter: '🌱', pro: '🌸', team: '🏢' };
+  const PLAN_NAMES = { starter: 'Starter', pro: 'Pro', team: 'Team / Business' };
+  const PLAN_DESCS = {
+    starter: 'Perfect for individuals getting started with AI',
+    pro:     'For creators, freelancers, and professionals',
+    team:    'For businesses, agencies, and teams',
+  };
+
+  async function loadPrices() {
+    try {
+      const res  = await fetch(`${API_BASE}/stripe/prices`);
+      const data = await res.json();
+      renderPricingCards(data.prices);
+    } catch (err) {
+      // Fallback to static prices
+      renderPricingCards([
+        { productName: 'Starter', amount: 900,  currency: 'usd', interval: 'month', trialDays: 7 },
+        { productName: 'Pro',     amount: 2900, currency: 'usd', interval: 'month', trialDays: 7 },
+        { productName: 'Team',    amount: 7900, currency: 'usd', interval: 'month', trialDays: 0 },
+      ]);
+    }
+  }
+
+  function renderPricingCards(prices) {
+    const planOrder = ['starter', 'pro', 'team'];
+    const sorted = planOrder.map(planKey => {
+      const price = prices.find(p =>
+        p.productName?.toLowerCase().includes(planKey) ||
+        p.metadata?.plan === planKey
+      );
+      return { planKey, price };
+    }).filter(p => p.price);
+
+    const container = document.getElementById('pricingCards');
+    container.innerHTML = sorted.map(({ planKey, price }, i) => {
+      const isFeatured = planKey === 'pro';
+      const amount     = (price.amount / 100).toFixed(0);
+      const features   = PLAN_FEATURES[planKey] || [];
+      const disabled   = PLAN_DISABLED[planKey] || [];
+      const trialDays  = price.trialDays || 0;
+      const delay      = i === 1 ? 'fade-up-delay-1' : i === 2 ? 'fade-up-delay-2' : '';
+
+      return `
+        <div class="pricing-card ${isFeatured ? 'featured' : ''} fade-up ${delay}">
+          ${isFeatured ? '<div class="pricing-badge">⭐ Most Popular</div>' : ''}
+          <div class="plan-icon">${PLAN_ICONS[planKey]}</div>
+          <div class="plan-name">${PLAN_NAMES[planKey]}</div>
+          <div class="plan-desc">${PLAN_DESCS[planKey]}</div>
+          <div class="plan-price">
+            <span class="currency">$</span><span class="amount">${amount}</span><span class="period">/${price.interval}</span>
+          </div>
+          ${trialDays > 0 ? `<div style="font-size:12px;font-weight:600;color:${isFeatured ? 'rgba(255,255,255,0.85)' : 'var(--primary-deep)'};margin-bottom:16px;">✓ ${trialDays}-day free trial included</div>` : ''}
+          <ul class="plan-features">
+            ${features.map(f => `<li><span class="check">✓</span> ${f}</li>`).join('')}
+            ${disabled.map(f => `<li class="disabled"><span class="check">✗</span> ${f}</li>`).join('')}
+          </ul>
+          <button class="${isFeatured ? 'btn-plan-featured' : 'btn-plan'}" onclick="selectPlan('${planKey}')">
+            ${trialDays > 0 ? `Start ${trialDays}-Day Free Trial` : 'Get Started'}
+          </button>
+        </div>`;
+    }).join('');
+
+    // Re-observe fade-up elements
+    document.querySelectorAll('.fade-up').forEach(el => {
+      if (typeof fadeObserver !== 'undefined') fadeObserver.observe(el);
+    });
+  }
+
+  function selectPlan(plan) {
+    const token = localStorage.getItem('sakura_token');
+    if (token) {
+      // Already logged in → go directly to checkout
+      startCheckout(plan, token);
+    } else {
+      // Not logged in → go to signup with plan param
+      window.location.href = `auth.html?tab=signup&plan=${plan}`;
+    }
+  }
+
+  async function startCheckout(plan, token) {
+    try {
+      const res  = await fetch(`${API_BASE}/stripe/create-checkout-session`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      showToast('❌ Failed to start checkout. Please try again.');
+    }
+  }
+
+  // Update nav if logged in
+  (function checkAuth() {
+    const token = localStorage.getItem('sakura_token');
+    const user  = JSON.parse(localStorage.getItem('sakura_user') || '{}');
+    if (token && user.email) {
+      document.getElementById('navActions').innerHTML = `
+        <a href="dashboard.html" class="btn-ghost" style="text-decoration:none;">Dashboard</a>
+        <a href="dashboard.html" class="btn-primary" style="text-decoration:none;">My Account</a>
+        <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
+      `;
+    }
+  })();
+
+  loadPrices();
+</script>
 </body>
 </html>

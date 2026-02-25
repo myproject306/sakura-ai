@@ -8,22 +8,53 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .usage-meter { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
+    .usage-meter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .usage-meter-header h3 { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .usage-row { margin-bottom: 14px; }
+    .usage-row:last-child { margin-bottom: 0; }
+    .usage-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-bottom: 6px; }
+    .usage-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .usage-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+    .usage-bar-fill.tokens  { background: var(--gradient-pink); }
+    .usage-bar-fill.credits { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .usage-bar-fill.danger  { background: linear-gradient(135deg, #EF4444, #DC2626); }
+    .plan-status-card {
+      background: var(--gradient-pink); border-radius: var(--radius-md);
+      padding: 20px; color: white; margin-bottom: 24px;
+    }
+    .plan-status-card h4 { font-size: 13px; opacity: 0.85; margin-bottom: 4px; }
+    .plan-status-card .plan-name-lg { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .plan-status-card .plan-detail { font-size: 12px; opacity: 0.8; }
+    .btn-billing { width: 100%; padding: 10px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-full); font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: var(--transition); font-family: inherit; margin-top: 12px; }
+    .btn-billing:hover { background: rgba(255,255,255,0.3); }
+    .project-output-preview { font-size: 12px; color: var(--light-gray); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--light-gray); }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state p { font-size: 14px; line-height: 1.7; }
+    .subscription-alert { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #92400E; display: flex; align-items: center; gap: 10px; }
+    .subscription-alert a { color: #92400E; font-weight: 700; text-decoration: underline; }
+  </style>
 </head>
 <body>
 
 <nav class="navbar">
   <div class="container">
-    <a href="index.html" class="logo"><div class="logo-icon">🌸</div>Sakura <span class="brand">AI</span></a>
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="17" r="4" fill="white"/><circle cx="15.5" cy="17" r="4" fill="white"/><path d="M8.5 13C8.5 10 11 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 13C15.5 10 13 7.5 12 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 5C12.5 3.5 14 2.5 15.5 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      Sakura <span class="brand">AI</span>
+    </a>
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
       <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
       <li><a href="templates.html">Templates</a></li>
-      <li><a href="faq.html">FAQ</a></li>
-      <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn-ghost" onclick="openModal('loginModal')">Log In</button>
-      <button class="btn-primary" onclick="openModal('signupModal')">Sign Up Free</button>
+      <span id="navUserName" style="font-size:13px;font-weight:600;color:var(--dark);"></span>
+      <button class="btn-ghost" onclick="handleLogout()">Log Out</button>
       <div class="hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></div>
     </div>
   </div>
@@ -34,36 +65,36 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-user">
-      <div class="sidebar-avatar">👤</div>
+      <div class="sidebar-avatar" id="sidebarAvatar">👤</div>
       <div class="sidebar-user-info">
-        <h4>Sarah Ahmed</h4>
-        <span>Free Account 🌸</span>
+        <h4 id="sidebarName">Loading...</h4>
+        <span id="sidebarPlan">Free Account</span>
       </div>
     </div>
 
     <nav class="sidebar-nav">
       <h5>Main</h5>
       <ul>
-        <li><a href="#" class="active"><span class="nav-icon">🏠</span> Dashboard</a></li>
+        <li><a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a></li>
         <li><a href="tools.html"><span class="nav-icon">🤖</span> AI Tools</a></li>
         <li><a href="templates.html"><span class="nav-icon">📚</span> Templates</a></li>
       </ul>
       <h5>Projects</h5>
       <ul>
-        <li><a href="#"><span class="nav-icon">📁</span> My Projects</a></li>
-        <li><a href="#"><span class="nav-icon">⭐</span> Favorites</a></li>
-        <li><a href="#"><span class="nav-icon">💾</span> Saved Results</a></li>
+        <li><a href="#" onclick="showSection('projects')"><span class="nav-icon">📁</span> My Projects</a></li>
+        <li><a href="#" onclick="showSection('favorites')"><span class="nav-icon">⭐</span> Favorites</a></li>
       </ul>
       <h5>My Site</h5>
       <ul>
-        <li><a href="#my-site"><span class="nav-icon">🌐</span> My Site</a></li>
-        <li><a href="#"><span class="nav-icon">🔗</span> Custom Domain</a></li>
+        <li><a href="#" onclick="showSection('mysite')"><span class="nav-icon">🌐</span> My Site</a></li>
+        <li><a href="#" onclick="showSection('mysite')"><span class="nav-icon">🔗</span> My Subdomain</a></li>
       </ul>
       <h5>Account</h5>
       <ul>
-        <li><a href="#"><span class="nav-icon">⚙️</span> Settings</a></li>
+        <li><a href="#" onclick="openBillingPortal()"><span class="nav-icon">💳</span> Billing</a></li>
+        <li><a href="pricing.html"><span class="nav-icon">⬆️</span> Upgrade Plan</a></li>
         <li><a href="faq.html"><span class="nav-icon">❓</span> Help Center</a></li>
-        <li><a href="#"><span class="nav-icon">🚪</span> Log Out</a></li>
+        <li><a href="#" onclick="handleLogout()"><span class="nav-icon">🚪</span> Log Out</a></li>
       </ul>
     </nav>
   </aside>
@@ -71,224 +102,429 @@
   <!-- Main Content -->
   <main class="dashboard-main">
 
+    <!-- Subscription alert (shown if no active plan) -->
+    <div class="subscription-alert" id="subscriptionAlert" style="display:none;">
+      ⚠️ You're on the free plan. <a href="pricing.html">Upgrade to unlock all AI tools →</a>
+    </div>
+
     <!-- Header -->
     <div class="dash-header">
       <div>
-        <h1>Good morning, Sarah 🌸</h1>
+        <h1 id="dashGreeting">Good morning 🌸</h1>
         <p>What would you like to create today?</p>
       </div>
-      <button class="btn-primary-lg" onclick="openModal('signupModal')">
+      <a href="tools.html" class="btn-primary-lg" style="text-decoration:none;">
         <i class="fas fa-plus"></i> New Project
-      </button>
+      </a>
     </div>
 
     <!-- Stats -->
-    <div class="dash-stats">
+    <div class="dash-stats" id="dashStats">
       <div class="dash-stat-card">
         <div class="dash-stat-icon">📁</div>
-        <div class="dash-stat-num">24</div>
+        <div class="dash-stat-num" id="statProjects">—</div>
         <div class="dash-stat-label">Total Projects</div>
       </div>
       <div class="dash-stat-card">
         <div class="dash-stat-icon">🤖</div>
-        <div class="dash-stat-num">147</div>
+        <div class="dash-stat-num" id="statGenerations">—</div>
         <div class="dash-stat-label">AI Generations</div>
       </div>
       <div class="dash-stat-card">
         <div class="dash-stat-icon">⭐</div>
-        <div class="dash-stat-num">8</div>
+        <div class="dash-stat-num" id="statFavorites">—</div>
         <div class="dash-stat-label">Favorites</div>
       </div>
       <div class="dash-stat-card">
-        <div class="dash-stat-icon">🌸</div>
-        <div class="dash-stat-num">∞</div>
-        <div class="dash-stat-label">Free Forever</div>
+        <div class="dash-stat-icon">🪙</div>
+        <div class="dash-stat-num" id="statCredits">—</div>
+        <div class="dash-stat-label">Credits Left</div>
       </div>
+    </div>
+
+    <!-- Usage Meter -->
+    <div class="usage-meter" id="usageMeter">
+      <div class="usage-meter-header">
+        <h3>📊 Usage This Month</h3>
+        <a href="pricing.html" style="font-size:12px;color:var(--primary-deep);font-weight:600;">Upgrade Plan →</a>
+      </div>
+      <div class="usage-row">
+        <div class="usage-label">
+          <span>Tokens (Text/Code)</span>
+          <span id="tokenUsageText">Loading...</span>
+        </div>
+        <div class="usage-bar"><div class="usage-bar-fill tokens" id="tokenBar" style="width:0%"></div></div>
+      </div>
+      <div class="usage-row">
+        <div class="usage-label">
+          <span>Credits (Image/Audio)</span>
+          <span id="creditUsageText">Loading...</span>
+        </div>
+        <div class="usage-bar"><div class="usage-bar-fill credits" id="creditBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Plan Status -->
+    <div class="plan-status-card" id="planStatusCard">
+      <h4>Current Plan</h4>
+      <div class="plan-name-lg" id="planNameLg">Free</div>
+      <div class="plan-detail" id="planDetail">Upgrade to access all AI tools</div>
+      <button class="btn-billing" onclick="openBillingPortal()" id="billingBtn" style="display:none;">
+        <i class="fas fa-credit-card"></i> Manage Billing
+      </button>
+      <a href="pricing.html" class="btn-billing" style="text-decoration:none;display:block;text-align:center;" id="upgradeBtn">
+        <i class="fas fa-arrow-up"></i> Upgrade Plan
+      </a>
     </div>
 
     <!-- Quick Access Tools -->
     <div class="dash-section-title">⚡ Quick Access</div>
     <div class="dash-tools-grid">
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">✍️</span>
-        <span>Article Writer</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=article-writer'">
+        <span class="emoji">✍️</span><span>Article Writer</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">🎨</span>
-        <span>Image Generator</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=text-to-image'">
+        <span class="emoji">🎨</span><span>Image Generator</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">💻</span>
-        <span>Code Generator</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=code-generator'">
+        <span class="emoji">💻</span><span>Code Generator</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">🎥</span>
-        <span>Video Script</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=email-writer'">
+        <span class="emoji">📧</span><span>Email Writer</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">📊</span>
-        <span>Data Analyzer</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=excel-csv-analyzer'">
+        <span class="emoji">📊</span><span>Data Analyzer</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">🎧</span>
-        <span>Text to Speech</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=text-to-speech'">
+        <span class="emoji">🎧</span><span>Text to Speech</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">📚</span>
-        <span>Study Planner</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=study-plan'">
+        <span class="emoji">📚</span><span>Study Planner</span>
       </button>
-      <button class="dash-tool-btn" onclick="openModal('signupModal')">
-        <span class="emoji">🧠</span>
-        <span>Business Plan</span>
+      <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=business-plan'">
+        <span class="emoji">🧠</span><span>Business Plan</span>
       </button>
+    </div>
+
+    <!-- My Site / Subdomain -->
+    <div class="dash-section-title" id="mysiteSection">🌐 My Site</div>
+    <div class="dash-projects" id="mySiteCard" style="margin-bottom:24px;">
+      <div class="dash-projects-header">
+        <h3>Your Site Name</h3>
+        <span style="font-size:12px;color:var(--gray);">Choose your subdomain</span>
+      </div>
+      <div style="padding:20px;">
+        <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">
+          Your personal Sakura AI site will be available at the address below. Choose a unique subdomain name.
+        </p>
+        <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:16px;">
+          <span style="padding:11px 14px;background:var(--accent);font-size:13px;color:var(--gray);border-right:1px solid var(--border);white-space:nowrap;">https://</span>
+          <input
+            type="text"
+            id="subdomainInput"
+            placeholder="yourname"
+            maxlength="32"
+            style="flex:1;padding:11px 12px;border:none;outline:none;font-size:14px;font-family:inherit;background:white;"
+            oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')"
+          />
+          <span style="padding:11px 14px;background:var(--accent);font-size:13px;color:var(--gray);border-left:1px solid var(--border);white-space:nowrap;">.sakura-ai.com</span>
+        </div>
+        <div id="subdomainPreview" style="font-size:12px;color:var(--primary-deep);font-weight:600;margin-bottom:16px;min-height:18px;"></div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button onclick="saveSubdomain()" class="btn-primary-lg" style="font-size:13px;padding:10px 24px;">
+            <i class="fas fa-save"></i> Save Subdomain
+          </button>
+          <button onclick="copySubdomainLink()" style="background:none;border:1.5px solid var(--border);border-radius:var(--radius-full);padding:10px 18px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;font-family:inherit;">
+            <i class="fas fa-copy"></i> Copy Link
+          </button>
+        </div>
+        <div id="subdomainStatus" style="margin-top:12px;font-size:13px;display:none;"></div>
+      </div>
     </div>
 
     <!-- Recent Projects -->
-    <div class="dash-section-title">📁 Recent Projects</div>
-    <div class="dash-projects">
+    <div class="dash-section-title" id="projectsSection">📁 Recent Projects</div>
+    <div class="dash-projects" id="projectsContainer">
       <div class="dash-projects-header">
         <h3>Recent Projects</h3>
-        <a href="#" style="font-size:13px;color:var(--primary-deep);font-weight:600;">View All →</a>
+        <a href="#" onclick="loadAllProjects()" style="font-size:13px;color:var(--primary-deep);font-weight:600;">View All →</a>
       </div>
-      <div class="project-row">
-        <div class="project-info">
-          <div class="project-icon">✍️</div>
-          <div>
-            <div class="project-name">Blog Post: AI Trends 2025</div>
-            <div class="project-date">Today, 10:30 AM</div>
-          </div>
-        </div>
-        <span class="project-tag">Writing</span>
-      </div>
-      <div class="project-row">
-        <div class="project-info">
-          <div class="project-icon">🎨</div>
-          <div>
-            <div class="project-name">Product Banner Design</div>
-            <div class="project-date">Yesterday, 3:15 PM</div>
-          </div>
-        </div>
-        <span class="project-tag">Image</span>
-      </div>
-      <div class="project-row">
-        <div class="project-info">
-          <div class="project-icon">💻</div>
-          <div>
-            <div class="project-name">Python Data Script</div>
-            <div class="project-date">2 days ago</div>
-          </div>
-        </div>
-        <span class="project-tag">Code</span>
-      </div>
-      <div class="project-row">
-        <div class="project-info">
-          <div class="project-icon">📊</div>
-          <div>
-            <div class="project-name">Q3 Sales Report Analysis</div>
-            <div class="project-date">3 days ago</div>
-          </div>
-        </div>
-        <span class="project-tag">Data</span>
-      </div>
-      <div class="project-row">
-        <div class="project-info">
-          <div class="project-icon">🎥</div>
-          <div>
-            <div class="project-name">Instagram Reel Script</div>
-            <div class="project-date">4 days ago</div>
-          </div>
-        </div>
-        <span class="project-tag">Video</span>
-      </div>
-    </div>
-
-    <!-- My Site Section -->
-    <div class="dash-section-title" id="my-site">🌐 My Site</div>
-    <div class="my-site-card" id="mySiteCard">
-      <div class="my-site-header">
-        <div class="my-site-title">
-          <span style="font-size:22px;">🌐</span>
-          <h3>Your Sakura Site</h3>
-        </div>
-        <span class="site-live-badge">
-          <span class="site-live-dot"></span> Live
-        </span>
-      </div>
-      <div class="my-site-url-row">
-        <span id="dashSubdomainUrl">https://sarah-ahmed.sakura-ai-platform.com</span>
-        <button class="btn-copy-url" onclick="copySubdomainUrl(document.getElementById('dashSubdomainUrl').textContent)">
-          <i class="fas fa-copy"></i> Copy
-        </button>
-      </div>
-      <div class="my-site-actions">
-        <button class="btn-site-action primary" onclick="window.open(document.getElementById('dashSubdomainUrl').textContent, '_blank')">
-          <i class="fas fa-external-link-alt"></i> Visit Site
-        </button>
-        <button class="btn-site-action outline" onclick="showCustomDomainInfo(); document.getElementById('dashCustomDomain').style.display='block';">
-          <i class="fas fa-globe"></i> Link Custom Domain
-        </button>
-        <button class="btn-site-action outline" onclick="copySubdomainUrl(document.getElementById('dashSubdomainUrl').textContent)">
-          <i class="fas fa-share-alt"></i> Share
-        </button>
-      </div>
-      <div id="dashCustomDomain" class="custom-domain-info" style="display:none;margin-top:16px;">
-        <h4>🔗 Link Your Custom Domain</h4>
-        <p>Point your domain's CNAME record to <strong>cname.sakura-ai-platform.com</strong> and enter it below:</p>
-        <div class="custom-domain-input-row">
-          <input type="text" placeholder="yourdomain.com" id="dashCustomDomainInput" />
-          <button class="btn-primary" onclick="
-            const d = document.getElementById('dashCustomDomainInput').value.trim();
-            if(d){ showToast('🔗 Connecting ' + d + '... DNS propagation may take up to 24 hours.'); localStorage.setItem('sakura_custom_domain', d); document.getElementById('dashCustomDomainInput').value=''; }
-            else { showToast('⚠️ Please enter a domain name'); }
-          ">Connect</button>
+      <div id="projectsList">
+        <div style="text-align:center;padding:32px;color:var(--light-gray);font-size:14px;">
+          <i class="fas fa-spinner fa-spin"></i> Loading projects...
         </div>
       </div>
-    </div>
-
-    <!-- Free Account Banner -->
-    <div class="dash-section-title">🌸 Your Account</div>
-    <div style="background:var(--gradient-hero);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-      <div>
-        <div style="font-size:18px;font-weight:800;color:var(--dark);margin-bottom:4px;">🌸 Free Account — All Tools Included</div>
-        <div style="font-size:13px;color:var(--gray);">You have full access to all 50+ AI tools. No subscription needed.</div>
-      </div>
-      <a href="tools.html" class="btn-primary-lg" style="padding:10px 24px;font-size:14px;">
-        <i class="fas fa-th-large"></i> Explore All Tools
-      </a>
     </div>
 
   </main>
 </div>
 
-<!-- MODALS -->
-<div id="loginModal" class="modal-overlay">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
-    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Welcome Back</h2><p>Log in to your Sakura AI account</p></div>
-    <form class="auth-form"><div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" required /></div><div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password" required /></div><button type="submit" class="btn-submit">Log In</button></form>
-    <div class="modal-footer">Don't have an account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
-  </div>
-</div>
-
-<div id="signupModal" class="modal-overlay">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
-    <div class="modal-logo"><div class="logo-icon" style="width:52px;height:52px;font-size:26px;margin:0 auto 12px;background:linear-gradient(135deg,#F7B7C8,#FADADD);border-radius:14px;display:flex;align-items:center;justify-content:center;">🌸</div><h2>Create Free Account</h2><p>100% free — no credit card required</p></div>
-    <form class="auth-form"><div class="form-row"><div class="form-group"><label>First Name</label><input type="text" placeholder="First name" required /></div><div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name" required /></div></div><div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" required /></div><div class="form-group"><label>Password</label><input type="password" placeholder="Create a password" required /></div><button type="submit" class="btn-submit">Create Free Account 🌸</button></form>
-    <div class="modal-footer">Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a></div>
-  </div>
-</div>
-
 <script src="script.js"></script>
 <script>
-  // Load subdomain from localStorage and update dashboard
-  (function loadDashSubdomain() {
-    const saved = localStorage.getItem('sakura_subdomain_url');
-    const el = document.getElementById('dashSubdomainUrl');
-    if (saved && el) {
-      el.textContent = saved;
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api' : '/api';
+
+  const token = localStorage.getItem('sakura_token');
+
+  // ── Auth check ─────────────────────────
+  if (!token) { window.location.href = 'auth.html'; }
+
+  // ── Init ───────────────────────────────
+  (async function init() {
+    try {
+      const res  = await fetch(`${API_BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+
+      if (!res.ok) { handleLogout(); return; }
+
+      const user = data.user;
+      localStorage.setItem('sakura_user', JSON.stringify(user));
+
+      // Update UI with user data
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+      document.getElementById('dashGreeting').textContent = `${greeting}, ${user.firstName || user.name?.split(' ')[0] || 'there'} 🌸`;
+      document.getElementById('navUserName').textContent  = user.name || user.email;
+      document.getElementById('sidebarName').textContent  = user.name || user.email;
+
+      // Plan display
+      const planIcons = { free: '🌱', starter: '🌱', pro: '🌸', team: '🏢' };
+      const planNames = { free: 'Free Account', starter: 'Starter Plan', pro: 'Pro Plan', team: 'Team Plan' };
+      document.getElementById('sidebarPlan').textContent = planNames[user.plan] || 'Free Account';
+      document.getElementById('sidebarPlan').style.color = user.plan !== 'free' ? 'var(--primary-deep)' : '';
+
+      // Plan status card
+      document.getElementById('planNameLg').textContent = `${planIcons[user.plan] || '🌱'} ${planNames[user.plan] || 'Free'}`;
+
+      const isActive = user.subscriptionStatus === 'active' || user.subscriptionStatus === 'trialing';
+      if (isActive) {
+        const periodEnd = user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleDateString() : '';
+        const trialEnd  = user.trialEndsAt ? new Date(user.trialEndsAt).toLocaleDateString() : '';
+        document.getElementById('planDetail').textContent = user.subscriptionStatus === 'trialing'
+          ? `Free trial ends ${trialEnd}`
+          : `Renews ${periodEnd}`;
+        document.getElementById('billingBtn').style.display = 'block';
+        document.getElementById('upgradeBtn').style.display = 'none';
+      } else {
+        document.getElementById('subscriptionAlert').style.display = 'flex';
+      }
+
+      // Credits stat
+      document.getElementById('statCredits').textContent = user.credits;
+
+      // Load stats and usage
+      loadStats();
+      loadUsage();
+      loadRecentProjects();
+
+    } catch (err) {
+      console.error('Dashboard init error:', err);
     }
   })();
+
+  // ── Load Stats ─────────────────────────
+  async function loadStats() {
+    try {
+      const res  = await fetch(`${API_BASE}/projects/stats`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      document.getElementById('statProjects').textContent    = data.totalProjects;
+      document.getElementById('statGenerations').textContent = data.totalGenerations;
+      document.getElementById('statFavorites').textContent   = data.favorites;
+    } catch (_) {}
+  }
+
+  // ── Load Usage ─────────────────────────
+  async function loadUsage() {
+    try {
+      const res  = await fetch(`${API_BASE}/tools/usage`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      document.getElementById('tokenUsageText').textContent =
+        `${data.tokens.used.toLocaleString()} / ${data.tokens.limit.toLocaleString()}`;
+      document.getElementById('tokenBar').style.width = `${data.tokens.percentage}%`;
+      if (data.tokens.percentage > 90) document.getElementById('tokenBar').classList.add('danger');
+
+      document.getElementById('creditUsageText').textContent =
+        `${data.credits.used} / ${data.credits.limit} used`;
+      document.getElementById('creditBar').style.width = `${data.credits.percentage}%`;
+      if (data.credits.percentage > 90) document.getElementById('creditBar').classList.add('danger');
+
+    } catch (_) {}
+  }
+
+  // ── Load Recent Projects ───────────────
+  async function loadRecentProjects() {
+    try {
+      const res  = await fetch(`${API_BASE}/projects?limit=5&sortBy=createdAt&order=desc`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      const list = document.getElementById('projectsList');
+
+      if (!data.projects || data.projects.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📁</div>
+            <p>No projects yet.<br>Use an AI tool to create your first project!</p>
+            <a href="tools.html" class="btn-primary-lg" style="text-decoration:none;display:inline-flex;margin-top:16px;font-size:14px;padding:10px 24px;">
+              <i class="fas fa-robot"></i> Explore AI Tools
+            </a>
+          </div>`;
+        return;
+      }
+
+      const categoryEmojis = { writing:'✍️', image:'🎨', audio:'🎧', code:'💻', data:'📊', study:'📚', business:'🧠', specialized:'🎯' };
+
+      list.innerHTML = data.projects.map(p => `
+        <div class="project-row" onclick="window.location.href='tool-interface.html?tool=${p.toolName}'" style="cursor:pointer;">
+          <div class="project-info">
+            <div class="project-icon">${categoryEmojis[p.category] || '📄'}</div>
+            <div>
+              <div class="project-name">${p.title}</div>
+              <div class="project-output-preview">${p.outputPreview || ''}</div>
+              <div class="project-date">${formatDate(p.createdAt)}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="project-tag">${p.category}</span>
+            <button onclick="event.stopPropagation();toggleFavorite('${p.id}', this)" style="background:none;border:none;cursor:pointer;font-size:16px;color:${p.isFavorite ? '#FF4D8D' : 'var(--light-gray)'};">
+              ${p.isFavorite ? '★' : '☆'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (_) {}
+  }
+
+  // ── Toggle Favorite ────────────────────
+  async function toggleFavorite(projectId, btn) {
+    try {
+      const res  = await fetch(`${API_BASE}/projects/${projectId}/favorite`, {
+        method: 'PUT', headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        btn.textContent = data.isFavorite ? '★' : '☆';
+        btn.style.color = data.isFavorite ? '#FF4D8D' : 'var(--light-gray)';
+      }
+    } catch (_) {}
+  }
+
+  // ── Open Billing Portal ────────────────
+  async function openBillingPortal() {
+    try {
+      showToast('Opening billing portal...');
+      const res  = await fetch(`${API_BASE}/stripe/customer-portal`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.url) window.open(data.url, '_blank');
+      else showToast('❌ ' + (data.error || 'Failed to open billing portal'));
+    } catch (err) {
+      showToast('❌ Failed to open billing portal');
+    }
+  }
+
+  // ── Logout ─────────────────────────────
+  async function handleLogout() {
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (_) {}
+    localStorage.removeItem('sakura_token');
+    localStorage.removeItem('sakura_refresh');
+    localStorage.removeItem('sakura_user');
+    window.location.href = 'index.html';
+  }
+
+  // ── Helpers ────────────────────────────
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000)    return 'Just now';
+    if (diff < 3600000)  return `${Math.floor(diff/60000)}m ago`;
+    if (diff < 86400000) return `${Math.floor(diff/3600000)}h ago`;
+    if (diff < 604800000) return `${Math.floor(diff/86400000)}d ago`;
+    return d.toLocaleDateString();
+  }
+
+  function loadAllProjects() {
+    window.location.href = 'tools.html';
+  }
+
+  // ── My Site / Subdomain ────────────────
+  (function loadSubdomain() {
+    const saved = localStorage.getItem('sakura_subdomain');
+    if (saved) {
+      document.getElementById('subdomainInput').value = saved;
+      document.getElementById('subdomainPreview').textContent = `🔗 https://${saved}.sakura-ai.com`;
+    }
+  })();
+
+  document.getElementById('subdomainInput').addEventListener('input', function() {
+    const val = this.value.trim();
+    const preview = document.getElementById('subdomainPreview');
+    if (val.length >= 3) {
+      preview.textContent = `🔗 https://${val}.sakura-ai.com`;
+      preview.style.color = 'var(--primary-deep)';
+    } else if (val.length > 0) {
+      preview.textContent = 'Minimum 3 characters required';
+      preview.style.color = '#EF4444';
+    } else {
+      preview.textContent = '';
+    }
+  });
+
+  function saveSubdomain() {
+    const val = document.getElementById('subdomainInput').value.trim();
+    const status = document.getElementById('subdomainStatus');
+    if (!val || val.length < 3) {
+      status.style.display = 'block';
+      status.style.color = '#EF4444';
+      status.textContent = '❌ Subdomain must be at least 3 characters.';
+      return;
+    }
+    if (!/^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/.test(val)) {
+      status.style.display = 'block';
+      status.style.color = '#EF4444';
+      status.textContent = '❌ Only lowercase letters, numbers, and hyphens allowed.';
+      return;
+    }
+    localStorage.setItem('sakura_subdomain', val);
+    localStorage.setItem('sakura_subdomain_url', `https://${val}.sakura-ai.com`);
+    status.style.display = 'block';
+    status.style.color = 'var(--primary-deep)';
+    status.textContent = `✅ Saved! Your site: https://${val}.sakura-ai.com`;
+    document.getElementById('subdomainPreview').textContent = `🔗 https://${val}.sakura-ai.com`;
+    showToast('🌸 Subdomain saved successfully!');
+  }
+
+  function copySubdomainLink() {
+    const val = document.getElementById('subdomainInput').value.trim();
+    if (!val) { showToast('Enter a subdomain first'); return; }
+    const url = `https://${val}.sakura-ai.com`;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('🔗 Link copied to clipboard!');
+    }).catch(() => {
+      showToast('Link: ' + url);
+    });
+  }
+
+  function showSection(section) {
+    if (section === 'mysite') {
+      document.getElementById('mysiteSection').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('projectsSection').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 </script>
 </body>
 </html>

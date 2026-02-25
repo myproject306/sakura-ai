@@ -1,0 +1,64 @@
+# ══════════════════════════════════════════
+# Sakura AI — .gitignore
+# ══════════════════════════════════════════
+
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment variables (real secrets)
+backend/.env
+.env
+.env.local
+.env.production
+
+# Keep the example file
+!backend/.env.example
+!.env.example
+
+# Database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+backend/prisma/dev.db
+backend/prisma/prisma/dev.db
+
+# Logs
+logs/
+*.log
+backend/logs/
+backend/logs/combined.log
+backend/logs/error.log
+
+# Prisma generated client (can be regenerated)
+backend/node_modules/.prisma/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist/
+build/
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+
+# Temporary files
+*.tmp
+*.temp

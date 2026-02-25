@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline — Sakura AI</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .container { max-width: 400px; }
+    .icon { font-size: 80px; margin-bottom: 24px; animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #2d1b2e;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 15px;
+      color: #888;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7b7c8, #e8547a);
+      color: white;
+      padding: 14px 36px;
+      border-radius: 9999px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232, 84, 122, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232, 84, 122, 0.4); }
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #2d1b2e;
+    }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #f7b7c8, #e8547a);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .tips {
+      margin-top: 32px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+    }
+    .tips h3 { font-size: 14px; font-weight: 700; color: #2d1b2e; margin-bottom: 12px; }
+    .tips li { font-size: 13px; color: #666; margin-bottom: 8px; list-style: none; padding-left: 20px; position: relative; }
+    .tips li::before { content: '✓'; position: absolute; left: 0; color: #e8547a; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <div class="logo-icon">🌸</div>
+      Sakura <span style="color:#e8547a;">AI</span>
+    </div>
+
+    <div class="icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>It looks like you've lost your internet connection. Some features require an active connection to work.</p>
+
+    <button class="btn" onclick="window.location.reload()">
+      🔄 Try Again
+    </button>
+
+    <div class="tips">
+      <h3>While you wait:</h3>
+      <ul>
+        <li>Check your Wi-Fi or mobile data</li>
+        <li>Previously visited pages are still available</li>
+        <li>Your work is saved locally</li>
+        <li>We'll reconnect automatically</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Auto-reload when back online
+    window.addEventListener('online', () => {
+      window.location.href = '/index.html';
+    });
+  </script>
+<script src="sakura-assistant.js"></script>
+</body>
+</html>

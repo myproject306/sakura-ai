@@ -325,13 +325,13 @@ curl -X DELETE http://localhost:3001/api/projects/PROJECT_ID \
 
 ## 5. Admin Panel
 
-> Requires admin role. Login with seeded admin: `admin@sakura-ai.com` / `Admin@Sakura2025!`
+> Requires admin role. Login with seeded admin: `admin@sakura.ai` / `Admin@Sakura2025!`
 
 ```bash
 # Login as admin
 curl -X POST http://localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@sakura-ai.com", "password": "Admin@Sakura2025!"}'
+  -d '{"email": "admin@sakura.ai", "password": "Admin@Sakura2025!"}'
 
 # Save admin token
 ADMIN_TOKEN="paste_admin_access_token_here"

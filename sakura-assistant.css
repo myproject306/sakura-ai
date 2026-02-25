@@ -1,0 +1,339 @@
+/* 🌸 Sakura AI Assistant — ChatGPT Style */
+
+/* ── FAB Button ── */
+#sk-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 99998;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b7c8, #e8547a);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(232,84,122,.4);
+  transition: transform .2s, box-shadow .2s;
+  outline: none;
+}
+#sk-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(232,84,122,.55); }
+#sk-fab svg { width: 26px; height: 26px; }
+
+/* ── Overlay ── */
+#sk-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 99998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+#sk-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ── Panel ── */
+#sk-panel {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 99999;
+  width: 420px;
+  height: 620px;
+  max-height: 92vh;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 40px rgba(0,0,0,.15);
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+#sk-panel.open { transform: translateY(0); }
+
+/* ── Header ── */
+#sk-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #f0e0e6;
+  flex-shrink: 0;
+}
+#sk-head-av {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fce4ec, #f48fb1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+#sk-head-info { flex: 1; }
+#sk-head-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+#sk-head-info p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sk-dot-online {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  animation: sk-blink 1.8s infinite;
+}
+@keyframes sk-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+#sk-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 16px;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+#sk-close:hover { background: #ffe0eb; color: #e8547a; }
+
+/* ── Messages Area ── */
+#sk-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fafafa;
+  scroll-behavior: smooth;
+}
+#sk-msgs::-webkit-scrollbar { width: 4px; }
+#sk-msgs::-webkit-scrollbar-thumb { background: #f0c0d0; border-radius: 4px; }
+#sk-msgs::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Message Rows ── */
+.sk-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .3s, transform .3s;
+}
+.sk-row.vis { opacity: 1; transform: translateY(0); }
+.sk-row-ai { justify-content: flex-start; }
+.sk-row-user { justify-content: flex-end; }
+
+/* ── Avatars ── */
+.sk-av-ai {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fce4ec, #f48fb1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  border: 1.5px solid #f7b7c8;
+}
+.sk-av-user {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8547a, #c0392b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  color: white;
+}
+
+/* ── Bubbles ── */
+.sk-bubble {
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.sk-bubble-ai {
+  background: #fff;
+  color: #1a1a2e;
+  border-radius: 4px 18px 18px 18px;
+  box-shadow: 0 1px 6px rgba(0,0,0,.07);
+  border: 1px solid #f0e0e6;
+}
+.sk-bubble-user {
+  background: linear-gradient(135deg, #f7b7c8, #e8547a);
+  color: #fff;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 2px 10px rgba(232,84,122,.25);
+}
+
+/* ── Typing Indicator ── */
+.sk-typing-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.sk-typing-dots {
+  background: #fff;
+  border: 1px solid #f0e0e6;
+  border-radius: 4px 18px 18px 18px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  box-shadow: 0 1px 6px rgba(0,0,0,.07);
+}
+.sk-td {
+  width: 8px;
+  height: 8px;
+  background: #e8547a;
+  border-radius: 50%;
+  animation: sk-td .8s ease-in-out infinite;
+}
+.sk-td:nth-child(2) { animation-delay: .15s; }
+.sk-td:nth-child(3) { animation-delay: .3s; }
+@keyframes sk-td { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+/* ── Input Area ── */
+#sk-input-area {
+  padding: 12px 16px 16px;
+  background: #fff;
+  border-top: 1px solid #f0e0e6;
+  flex-shrink: 0;
+}
+#sk-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #f7f7f8;
+  border: 1.5px solid #e8d0d8;
+  border-radius: 14px;
+  padding: 8px 10px;
+  gap: 8px;
+  transition: border-color .2s, box-shadow .2s;
+}
+#sk-input-wrap:focus-within {
+  border-color: #e8547a;
+  box-shadow: 0 0 0 3px rgba(232,84,122,.1);
+  background: #fff;
+}
+
+/* Mic button INSIDE input */
+#sk-mic {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  transition: color .2s, background .2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+#sk-mic:hover { color: #e8547a; background: #fce4ec; }
+#sk-mic.listening {
+  color: #fff;
+  background: linear-gradient(135deg, #f7b7c8, #e8547a);
+  animation: sk-mic-pulse .8s infinite;
+}
+@keyframes sk-mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,84,122,.4)} 50%{box-shadow:0 0 0 6px rgba(232,84,122,.0)} }
+
+#sk-inp {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a2e;
+  outline: none;
+  resize: none;
+  min-height: 22px;
+  max-height: 120px;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+#sk-inp::placeholder { color: #bbb; }
+
+/* Send button INSIDE input */
+#sk-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b7c8, #e8547a);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .2s, opacity .2s;
+  box-shadow: 0 2px 8px rgba(232,84,122,.3);
+}
+#sk-send:hover { transform: scale(1.08); }
+#sk-send:disabled { opacity: .4; cursor: default; transform: none; }
+
+/* ── Speaking wave in header ── */
+#sk-wave {
+  display: none;
+  align-items: center;
+  gap: 3px;
+  margin-left: 4px;
+}
+#sk-wave.on { display: flex; }
+.sk-wbar {
+  width: 3px;
+  background: #e8547a;
+  border-radius: 2px;
+  height: 5px;
+}
+.sk-wbar.on { animation: sk-wave .5s ease-in-out infinite alternate; }
+.sk-wbar:nth-child(1).on { animation-delay: 0s; height: 8px; }
+.sk-wbar:nth-child(2).on { animation-delay: .1s; height: 14px; }
+.sk-wbar:nth-child(3).on { animation-delay: .2s; height: 10px; }
+.sk-wbar:nth-child(4).on { animation-delay: .1s; height: 14px; }
+.sk-wbar:nth-child(5).on { animation-delay: 0s; height: 8px; }
+@keyframes sk-wave { from{opacity:.4} to{opacity:1} }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  #sk-panel {
+    width: 100%;
+    height: 92vh;
+    border-radius: 20px 20px 0 0;
+    right: 0;
+    bottom: 0;
+  }
+  #sk-fab { bottom: 20px; right: 16px; }
+}

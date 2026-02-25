@@ -45,6 +45,8 @@ app.use(helmet({
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5500',
+    'https://sakura.ai',
+    'https://www.sakura.ai',
     'http://127.0.0.1:5500',
     'http://localhost:3000',
   ],
@@ -83,6 +85,8 @@ app.use('/api/stripe',   require('./routes/stripe'));
 app.use('/api/tools',    require('./routes/tools'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/admin',    require('./routes/admin'));
+app.use('/api/ai',       require('./routes/ai'));
+
 
 // ── 404 Handler ──────────────────────────
 app.use('/api/*', (req, res) => {

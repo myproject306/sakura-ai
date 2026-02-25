@@ -31,6 +31,13 @@
     .guarantee-box h3 { font-size: 22px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
     .guarantee-box p { font-size: 14px; color: var(--gray); line-height: 1.8; }
   </style>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -195,10 +202,19 @@
   </div>
 </footer>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3001/api' : '/api';
+  const API_BASE = SAKURA_CONFIG.API_BASE;
 
   const PLAN_FEATURES = {
     starter: ['Access to core AI tools','50+ templates library','500K tokens/month','50 credits/month','Arabic & English support','Personal dashboard','Email support'],
@@ -219,6 +235,15 @@
   };
 
   async function loadPrices() {
+    // If demo mode or backend not configured, use static prices directly
+    if (SAKURA_CONFIG.DEMO_MODE) {
+      renderPricingCards([
+        { productName: 'Starter', amount: 900,  currency: 'usd', interval: 'month', trialDays: 7 },
+        { productName: 'Pro',     amount: 2900, currency: 'usd', interval: 'month', trialDays: 7 },
+        { productName: 'Team',    amount: 7900, currency: 'usd', interval: 'month', trialDays: 0 },
+      ]);
+      return;
+    }
     try {
       const res  = await fetch(`${API_BASE}/stripe/prices`);
       const data = await res.json();
@@ -318,5 +343,6 @@
 
   loadPrices();
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

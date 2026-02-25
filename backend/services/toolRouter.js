@@ -1,81 +1,75 @@
 // ══════════════════════════════════════════
 // Sakura AI — Tool Router Service
 // Routes each tool request to the correct
-// AI provider (OpenAI, Stability, ElevenLabs)
+// AI provider (hidden engine, Stability, ElevenLabs)
 // ══════════════════════════════════════════
 
-const OpenAI  = require('openai');
-const axios   = require('axios');
-const FormData = require('form-data');
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const axios      = require('axios');
+const FormData   = require('form-data');
+const cp         = require('./copilotProvider');   // hidden AI engine
 
 // ══════════════════════════════════════════
 // TEXT & WRITING TOOLS
 // ══════════════════════════════════════════
 
-async function runTextTool(toolName, params) {
+async function runTextTool(toolName, params, isFreeUser = false) {
   const systemPrompts = {
-    'article-writer': `You are an expert content writer. Write comprehensive, SEO-optimized articles that are engaging, well-structured with proper headings (H2, H3), and provide real value. Always include an introduction, body sections, and conclusion.`,
-    'email-writer': `You are a professional email writer. Write clear, concise, and professional emails with proper greeting, body, and sign-off. Match the requested tone exactly.`,
-    'social-media-posts': `You are a social media expert. Create engaging, platform-optimized posts with relevant hashtags, emojis where appropriate, and compelling calls-to-action.`,
-    'text-summarizer': `You are an expert at summarizing content. Create clear, concise summaries that capture all key points without losing important information. Use bullet points for clarity.`,
-    'text-rewriter': `You are an expert editor and rewriter. Improve the given text while preserving its meaning. Enhance clarity, flow, and engagement. Fix grammar and style issues.`,
-    'marketing-copy': `You are a world-class copywriter. Write persuasive, conversion-focused marketing copy that speaks directly to the target audience's pain points and desires.`,
-    'product-description': `You are an e-commerce copywriting expert. Write compelling product descriptions that highlight benefits, features, and create desire. Optimize for both humans and search engines.`,
-    'ad-copy': `You are a performance marketing expert. Write high-converting ad copy for the specified platform. Focus on the hook, benefit, and clear call-to-action.`,
-    'customer-support': `You are a professional customer support specialist. Write empathetic, helpful, and solution-focused responses that resolve issues and maintain customer satisfaction.`,
+    'article-writer':    `You are an expert content writer. Write comprehensive, SEO-optimized articles that are engaging, well-structured with proper headings (H2, H3), and provide real value. Always include an introduction, body sections, and conclusion.`,
+    'email-writer':      `You are a professional email writer. Write clear, concise, and professional emails with proper greeting, body, and sign-off. Match the requested tone exactly.`,
+    'social-media-posts':`You are a social media expert. Create engaging, platform-optimized posts with relevant hashtags, emojis where appropriate, and compelling calls-to-action.`,
+    'text-summarizer':   `You are an expert at summarizing content. Create clear, concise summaries that capture all key points without losing important information. Use bullet points for clarity.`,
+    'text-rewriter':     `You are an expert editor and rewriter. Improve the given text while preserving its meaning. Enhance clarity, flow, and engagement. Fix grammar and style issues.`,
+    'marketing-copy':    `You are a world-class copywriter. Write persuasive, conversion-focused marketing copy that speaks directly to the target audience's pain points and desires.`,
+    'product-description':`You are an e-commerce copywriting expert. Write compelling product descriptions that highlight benefits, features, and create desire. Optimize for both humans and search engines.`,
+    'ad-copy':           `You are a performance marketing expert. Write high-converting ad copy for the specified platform. Focus on the hook, benefit, and clear call-to-action.`,
+    'customer-support':  `You are a professional customer support specialist. Write empathetic, helpful, and solution-focused responses that resolve issues and maintain customer satisfaction.`,
   };
 
-  const userPrompt = buildTextPrompt(toolName, params);
+  const userPrompt   = buildTextPrompt(toolName, params);
   const systemPrompt = systemPrompts[toolName] || `You are a helpful AI assistant specialized in ${toolName.replace(/-/g, ' ')}.`;
 
-  const response = await openai.chat.completions.create({
-    model:       process.env.OPENAI_MODEL_TEXT || 'gpt-4-turbo-preview',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userPrompt },
-    ],
-    max_tokens:   2000,
-    temperature:  0.7,
+  // Free users: no Bing enrichment, reduced tokens
+  const searchQuery = isFreeUser ? '' : (params.topic || params.subject || params.product || '');
+  const maxTokens   = isFreeUser ? 600 : 2000;
+
+  const { text, tokensUsed } = await cp.generate({
+    systemPrompt,
+    userPrompt,
+    maxTokens,
+    temperature: 0.7,
+    searchQuery,
   });
 
-  const output     = response.choices[0].message.content;
-  const tokensUsed = response.usage.total_tokens;
-
-  return { output, tokensUsed, outputType: 'text' };
+  return { output: text, tokensUsed, outputType: 'text' };
 }
 
 // ══════════════════════════════════════════
 // CODE TOOLS
 // ══════════════════════════════════════════
 
-async function runCodeTool(toolName, params) {
+async function runCodeTool(toolName, params, isFreeUser = false) {
   const systemPrompts = {
-    'code-generator': `You are an expert software engineer. Generate clean, well-commented, production-ready code. Always include: 1) The complete code, 2) Brief explanation of how it works, 3) Usage example. Format code in proper markdown code blocks.`,
-    'bug-fixer': `You are an expert debugger. Analyze the provided code, identify ALL bugs and issues, explain what each bug is and why it's a problem, then provide the complete fixed version. Be thorough.`,
-    'code-explainer': `You are a programming teacher. Explain code in clear, simple language that a beginner can understand. Break down each section, explain the logic, and highlight important concepts.`,
+    'code-generator':       `You are an expert software engineer. Generate clean, well-commented, production-ready code. Always include: 1) The complete code, 2) Brief explanation of how it works, 3) Usage example. Format code in proper markdown code blocks.`,
+    'bug-fixer':            `You are an expert debugger. Analyze the provided code, identify ALL bugs and issues, explain what each bug is and why it's a problem, then provide the complete fixed version. Be thorough.`,
+    'code-explainer':       `You are a programming teacher. Explain code in clear, simple language that a beginner can understand. Break down each section, explain the logic, and highlight important concepts.`,
     'documentation-writer': `You are a technical documentation expert. Generate comprehensive, clear documentation including: function descriptions, parameters, return values, examples, and edge cases. Use proper documentation format.`,
-    'automation-scripts': `You are a DevOps and automation expert. Generate robust, well-commented automation scripts. Include error handling, logging, and clear instructions for setup and usage.`,
+    'automation-scripts':   `You are a DevOps and automation expert. Generate robust, well-commented automation scripts. Include error handling, logging, and clear instructions for setup and usage.`,
   };
 
-  const userPrompt = buildCodePrompt(toolName, params);
+  const userPrompt   = buildCodePrompt(toolName, params);
   const systemPrompt = systemPrompts[toolName] || `You are an expert programmer specializing in ${toolName.replace(/-/g, ' ')}.`;
 
-  const response = await openai.chat.completions.create({
-    model:       process.env.OPENAI_MODEL_CODE || 'gpt-4-turbo-preview',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userPrompt },
-    ],
-    max_tokens:   3000,
-    temperature:  0.2, // Lower temp for code accuracy
+  // Free users: reduced token limit
+  const maxTokens = isFreeUser ? 500 : 3000;
+
+  // Code tools use lower temperature for accuracy via generateCode()
+  const { text, tokensUsed } = await cp.generateCode({
+    systemPrompt,
+    userPrompt,
+    maxTokens,
   });
 
-  const output     = response.choices[0].message.content;
-  const tokensUsed = response.usage.total_tokens;
-
-  return { output, tokensUsed, outputType: 'code' };
+  return { output: text, tokensUsed, outputType: 'code' };
 }
 
 // ══════════════════════════════════════════
@@ -84,57 +78,54 @@ async function runCodeTool(toolName, params) {
 
 async function runBusinessTool(toolName, params) {
   const systemPrompts = {
-    'business-plan': `You are a seasoned business consultant and MBA. Create comprehensive, realistic business plans with executive summary, market analysis, competitive landscape, financial projections, and actionable strategies.`,
-    'cv-resume': `You are a professional career coach and resume expert. Create ATS-optimized, compelling CVs that highlight achievements with quantifiable results. Use strong action verbs and industry keywords.`,
+    'business-plan':        `You are a seasoned business consultant and MBA. Create comprehensive, realistic business plans with executive summary, market analysis, competitive landscape, financial projections, and actionable strategies.`,
+    'cv-resume':            `You are a professional career coach and resume expert. Create ATS-optimized, compelling CVs that highlight achievements with quantifiable results. Use strong action verbs and industry keywords.`,
     'presentation-builder': `You are a presentation design expert. Create clear, compelling presentation outlines with logical flow, engaging slide titles, and concise bullet points. Each slide should have a clear purpose.`,
-    'sop-workflow': `You are a business process expert. Create detailed, clear Standard Operating Procedures with step-by-step instructions, decision points, roles and responsibilities, and quality checkpoints.`,
-    'formal-email': `You are a business communication expert. Write formal, professional emails that are clear, respectful, and achieve their intended purpose. Follow proper business email etiquette.`,
+    'sop-workflow':         `You are a business process expert. Create detailed, clear Standard Operating Procedures with step-by-step instructions, decision points, roles and responsibilities, and quality checkpoints.`,
+    'formal-email':         `You are a business communication expert. Write formal, professional emails that are clear, respectful, and achieve their intended purpose. Follow proper business email etiquette.`,
   };
 
   const systemPrompt = systemPrompts[toolName] || `You are an expert business consultant specializing in ${toolName.replace(/-/g, ' ')}.`;
   const userPrompt   = buildBusinessPrompt(toolName, params);
 
-  const response = await openai.chat.completions.create({
-    model:       process.env.OPENAI_MODEL_TEXT || 'gpt-4-turbo-preview',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userPrompt },
-    ],
-    max_tokens:   3000,
-    temperature:  0.6,
+  // Enrich business plans with real-time industry data via Bing
+  const searchQuery = params.industry || params.businessName || params.topic || '';
+
+  const { text, tokensUsed } = await cp.generate({
+    systemPrompt,
+    userPrompt,
+    maxTokens:   3000,
+    temperature: 0.6,
+    searchQuery,
   });
 
-  const output     = response.choices[0].message.content;
-  const tokensUsed = response.usage.total_tokens;
-
-  return { output, tokensUsed, outputType: 'text' };
+  return { output: text, tokensUsed, outputType: 'text' };
 }
 
-async function runStudyTool(toolName, params) {
+async function runStudyTool(toolName, params, isFreeUser = false) {
   const systemPrompts = {
-    'lesson-simplifier': `You are an expert educator. Simplify complex topics using analogies, real-world examples, and step-by-step explanations. Make learning accessible and engaging for the specified level.`,
-    'qa-generator': `You are an expert educator and assessment designer. Generate diverse, high-quality practice questions (multiple choice, short answer, essay) with detailed answer explanations.`,
-    'study-plan': `You are an academic coach. Create detailed, realistic study plans with daily schedules, milestones, review sessions, and practice tests. Adapt to the student's available time and current level.`,
-    'step-by-step-solver': `You are a patient tutor. Solve problems step-by-step with clear explanations at each step. Show all work, explain the reasoning, and highlight key concepts and formulas used.`,
+    'lesson-simplifier':  `You are an expert educator. Simplify complex topics using analogies, real-world examples, and step-by-step explanations. Make learning accessible and engaging for the specified level.`,
+    'qa-generator':       `You are an expert educator and assessment designer. Generate diverse, high-quality practice questions (multiple choice, short answer, essay) with detailed answer explanations.`,
+    'study-plan':         `You are an academic coach. Create detailed, realistic study plans with daily schedules, milestones, review sessions, and practice tests. Adapt to the student's available time and current level.`,
+    'step-by-step-solver':`You are a patient tutor. Solve problems step-by-step with clear explanations at each step. Show all work, explain the reasoning, and highlight key concepts and formulas used.`,
   };
 
   const systemPrompt = systemPrompts[toolName] || `You are an expert educator specializing in ${toolName.replace(/-/g, ' ')}.`;
   const userPrompt   = buildStudyPrompt(toolName, params);
 
-  const response = await openai.chat.completions.create({
-    model:       process.env.OPENAI_MODEL_TEXT || 'gpt-4-turbo-preview',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userPrompt },
-    ],
-    max_tokens:   2500,
-    temperature:  0.5,
+  // Free users: no Bing enrichment, reduced tokens
+  const searchQuery = isFreeUser ? '' : (params.topic || params.subject || '');
+  const maxTokens   = isFreeUser ? 600 : 2500;
+
+  const { text, tokensUsed } = await cp.generate({
+    systemPrompt,
+    userPrompt,
+    maxTokens,
+    temperature: 0.5,
+    searchQuery,
   });
 
-  const output     = response.choices[0].message.content;
-  const tokensUsed = response.usage.total_tokens;
-
-  return { output, tokensUsed, outputType: 'text' };
+  return { output: text, tokensUsed, outputType: 'text' };
 }
 
 // ══════════════════════════════════════════
@@ -226,13 +217,16 @@ async function runTTSTool(params) {
 
 async function runSTTTool(audioBuffer, mimeType = 'audio/mp3') {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error('OpenAI API key not configured');
+  if (!apiKey) throw new Error('Audio transcription service not configured');
 
   const { Readable } = require('stream');
+  const { default: OpenAI } = require('openai');
+  const openaiClient = new OpenAI({ apiKey });
+
   const stream = Readable.from(audioBuffer);
   stream.path = 'audio.mp3';
 
-  const transcription = await openai.audio.transcriptions.create({
+  const transcription = await openaiClient.audio.transcriptions.create({
     file:  stream,
     model: 'whisper-1',
   });
@@ -256,20 +250,14 @@ Format your response in a clear, structured way with sections and bullet points.
 
   const userPrompt = `Analyze the following data and ${question || 'provide comprehensive insights'}:\n\n${data}\n\nFormat: ${format}`;
 
-  const response = await openai.chat.completions.create({
-    model:       process.env.OPENAI_MODEL_TEXT || 'gpt-4-turbo-preview',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userPrompt },
-    ],
-    max_tokens:   2500,
-    temperature:  0.3,
+  const { text, tokensUsed } = await cp.generate({
+    systemPrompt,
+    userPrompt,
+    maxTokens:   2500,
+    temperature: 0.3,
   });
 
-  const output     = response.choices[0].message.content;
-  const tokensUsed = response.usage.total_tokens;
-
-  return { output, tokensUsed, outputType: 'text' };
+  return { output: text, tokensUsed, outputType: 'text' };
 }
 
 // ══════════════════════════════════════════
@@ -351,7 +339,7 @@ function enhanceImagePrompt(toolName, prompt, style) {
 // MAIN ROUTER FUNCTION
 // ══════════════════════════════════════════
 
-async function routeTool(toolName, category, params) {
+async function routeTool(toolName, category, params, isFreeUser = false) {
   const startTime = Date.now();
 
   try {
@@ -360,16 +348,16 @@ async function routeTool(toolName, category, params) {
     switch (category) {
       case 'writing':
       case 'specialized':
-        result = await runTextTool(toolName, params);
+        result = await runTextTool(toolName, params, isFreeUser);
         break;
       case 'code':
-        result = await runCodeTool(toolName, params);
+        result = await runCodeTool(toolName, params, isFreeUser);
         break;
       case 'business':
         result = await runBusinessTool(toolName, params);
         break;
       case 'study':
-        result = await runStudyTool(toolName, params);
+        result = await runStudyTool(toolName, params, isFreeUser);
         break;
       case 'image':
         result = await runImageTool(toolName, params);

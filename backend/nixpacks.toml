@@ -1,0 +1,20 @@
+# Nixpacks configuration for Railway
+# Installs both Node.js and Python for Sakura AI backend
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "python311", "python311Packages.pip"]
+
+[phases.install]
+cmds = [
+  "npm install",
+  "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "npx prisma generate",
+  "npx prisma db push"
+]
+
+[start]
+cmd = "npm start"

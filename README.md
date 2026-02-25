@@ -197,7 +197,7 @@ Features:
 - Queue status
 
 Default admin credentials (after seeding):
-- Email: `admin@sakura-ai.com`
+- Email: `admin@sakura.ai`
 - Password: `Admin@Sakura2025!`
 
 **Change these immediately in production!**
@@ -234,5 +234,5 @@ Default admin credentials (after seeding):
 
 ## 📞 Support
 
-- Email: hello@sakura-ai.com
+- Email: hello@sakura.ai
 - Support Hours: Mon–Fri, 9AM–6PM (GMT+3)

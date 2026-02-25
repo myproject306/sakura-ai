@@ -82,19 +82,19 @@ async function authMiddleware(req, res, next) {
 }
 
 // ── Require active subscription ──────────
+// Free users are allowed but marked with req.isFreeUser = true
+// Full blocking only if account is suspended or token invalid
 function requireSubscription(req, res, next) {
   const { plan, subscriptionStatus, trialEndsAt } = req.user;
 
   const isActive = subscriptionStatus === 'active' || subscriptionStatus === 'trialing';
   const trialValid = trialEndsAt && new Date(trialEndsAt) > new Date();
+  const isPaid = isActive || trialValid;
 
-  if (plan === 'free' && !isActive && !trialValid) {
-    return res.status(403).json({
-      error: 'Active subscription required',
-      code: 'SUBSCRIPTION_REQUIRED',
-      upgradeUrl: '/pricing.html',
-    });
-  }
+  // Mark free users — they can proceed but with heavy restrictions
+  req.isFreeUser = (plan === 'free' && !isPaid);
+  req.isPaidUser = isPaid || plan !== 'free';
+
   next();
 }
 

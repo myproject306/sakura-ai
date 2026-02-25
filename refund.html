@@ -8,6 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -83,7 +90,7 @@
   <h2>6. How to Request a Refund</h2>
   <p>To request a refund for any paid service:</p>
   <ul>
-    <li>Contact our support team at <strong>support@sakura-ai.com</strong> within the eligible timeframe.</li>
+    <li>Contact our support team at <strong>support@sakura.ai</strong> within the eligible timeframe.</li>
     <li>Include your account email, order/transaction ID, and reason for the refund request.</li>
     <li>Our team will review your request and respond within 3-5 business days.</li>
     <li>Approved refunds will be processed to the original payment method within 5-10 business days.</li>
@@ -98,8 +105,8 @@
   <h2>9. Contact Us</h2>
   <p>For any questions about this Refund Policy or to submit a refund request, please contact us:</p>
   <ul>
-    <li>Email: support@sakura-ai.com</li>
-    <li>Contact Form: <a href="contact.html" style="color:var(--primary-deep);">sakura-ai.com/contact</a></li>
+    <li>Email: support@sakura.ai</li>
+    <li>Contact Form: <a href="contact.html" style="color:var(--primary-deep);">sakura.ai/contact</a></li>
     <li>Response Time: Within 24–48 hours on business days</li>
   </ul>
 
@@ -126,6 +133,15 @@
   </div>
 </footer>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
 <script src="script.js"></script>
 <script>
   (function checkAuth() {
@@ -140,5 +156,6 @@
     }
   })();
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

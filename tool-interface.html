@@ -9,139 +9,102 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .tool-page { margin-top: 70px; min-height: calc(100vh - 70px); background: var(--accent); }
-    .tool-header {
-      background: var(--white); border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-    }
-    .tool-header-inner { display: flex; align-items: center; gap: 16px; }
-    .tool-header-icon {
-      width: 52px; height: 52px; background: var(--gradient-pink);
-      border-radius: var(--radius-md); display: flex; align-items: center;
-      justify-content: center; font-size: 24px; flex-shrink: 0;
-    }
-    .tool-header-info h1 { font-size: 22px; font-weight: 800; color: var(--dark); }
-    .tool-header-info p  { font-size: 13px; color: var(--gray); margin-top: 2px; }
-    .tool-header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
-    .tool-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      padding: 28px 0 48px;
-    }
-    /* Input Panel */
-    .tool-input-panel {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 28px; height: fit-content;
-    }
-    .tool-input-panel h3 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    .tool-field { margin-bottom: 18px; }
-    .tool-field label { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 7px; }
-    .tool-field input,
-    .tool-field select,
-    .tool-field textarea {
-      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 13px; font-family: inherit;
-      color: var(--dark); background: var(--white); transition: var(--transition); outline: none;
-    }
-    .tool-field input:focus,
-    .tool-field select:focus,
-    .tool-field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(247,183,200,0.2); }
-    .tool-field textarea { resize: vertical; min-height: 100px; }
-    .tool-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .char-count { font-size: 11px; color: var(--light-gray); text-align: right; margin-top: 4px; }
-    .btn-run {
-      width: 100%; padding: 14px; background: var(--gradient-pink); border: none;
-      border-radius: var(--radius-full); font-size: 15px; font-weight: 700;
-      color: white; cursor: pointer; transition: var(--transition);
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      font-family: inherit; margin-top: 8px;
-    }
-    .btn-run:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .btn-run:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    /* Output Panel */
-    .tool-output-panel {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 28px;
-      display: flex; flex-direction: column; min-height: 500px;
-    }
-    .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .output-header h3 { font-size: 15px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 8px; }
-    .output-actions { display: flex; gap: 8px; }
-    .btn-output-action {
-      padding: 7px 14px; border-radius: var(--radius-full); font-size: 12px;
-      font-weight: 600; cursor: pointer; transition: var(--transition);
-      display: flex; align-items: center; gap: 5px; font-family: inherit;
-    }
-    .btn-output-action.outline { background: transparent; border: 1.5px solid var(--border); color: var(--gray); }
-    .btn-output-action.outline:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--secondary); }
-    .btn-output-action.pink { background: var(--gradient-pink); border: none; color: white; }
-    .btn-output-action.pink:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-    /* Output states */
-    .output-empty {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; text-align: center; color: var(--light-gray);
-    }
-    .output-empty .empty-icon { font-size: 52px; margin-bottom: 14px; opacity: 0.5; }
-    .output-empty p { font-size: 14px; line-height: 1.7; }
-    .output-loading {
-      flex: 1; display: none; flex-direction: column; align-items: center;
-      justify-content: center; gap: 16px;
-    }
-    .output-loading .loading-dots { display: flex; gap: 6px; }
-    .output-loading .dot {
-      width: 10px; height: 10px; background: var(--primary);
-      border-radius: 50%; animation: dotBounce 1.2s infinite;
-    }
-    .output-loading .dot:nth-child(2) { animation-delay: 0.2s; }
-    .output-loading .dot:nth-child(3) { animation-delay: 0.4s; }
+    .tool-page { margin-top:70px; min-height:calc(100vh - 70px); background:var(--accent); }
+    .tool-header { background:var(--white); border-bottom:1px solid var(--border); padding:20px 0; }
+    .tool-header-inner { display:flex; align-items:center; gap:16px; }
+    .tool-header-icon { width:52px; height:52px; background:var(--gradient-pink); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+    .tool-header-info h1 { font-size:22px; font-weight:800; color:var(--dark); }
+    .tool-header-info p  { font-size:13px; color:var(--gray); margin-top:2px; }
+    .tool-header-actions { margin-left:auto; display:flex; gap:10px; align-items:center; }
+    .tool-content-area { max-width:780px; margin:0 auto; padding:36px 20px 60px; }
+    /* ── Single Search Bar ── */
+    .search-bar-wrap { display:flex; align-items:center; background:var(--white); border:2px solid var(--border); border-radius:var(--radius-full); padding:6px 6px 6px 20px; box-shadow:var(--shadow-sm); transition:var(--transition); margin-bottom:24px; }
+    .search-bar-wrap:focus-within { border-color:var(--primary); box-shadow:0 0 0 4px rgba(247,183,200,0.2); }
+    .search-input { flex:1; border:none; outline:none; font-size:15px; font-family:inherit; color:var(--dark); background:transparent; padding:10px 0; }
+    .search-input::placeholder { color:var(--light-gray); }
+    .search-btn { flex-shrink:0; background:var(--gradient-pink); border:none; border-radius:var(--radius-full); padding:12px 22px; font-size:14px; font-weight:700; color:white; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:8px; font-family:inherit; }
+    .search-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 20px rgba(247,183,200,0.5); }
+    .search-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+    /* ── Usage bar (below search bar) ── */
+    .usage-bar-wrap { margin-bottom:24px; }
+    .usage-bar-label { display:flex; justify-content:space-between; font-size:12px; color:var(--gray); margin-bottom:6px; }
+    .usage-bar { height:4px; background:var(--border); border-radius:3px; overflow:hidden; }
+    .usage-bar-fill { height:100%; background:var(--gradient-pink); border-radius:3px; transition:width 0.5s ease; }
+    /* ── Keep tool-field only for improve modal ── */
+    .tool-field { margin-bottom:18px; }
+    .tool-field label { display:block; font-size:13px; font-weight:600; color:var(--dark); margin-bottom:7px; }
+    .tool-field textarea { width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:inherit; color:var(--dark); background:var(--white); transition:var(--transition); outline:none; box-sizing:border-box; resize:vertical; min-height:110px; }
+    .tool-field textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(247,183,200,0.2); }
+    .tool-loading-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:48px 28px; box-shadow:var(--shadow-sm); display:none; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; margin-bottom:24px; }
+    .tool-loading-card.visible { display:flex; }
+    .loading-dots { display:flex; gap:8px; }
+    .loading-dots .dot { width:12px; height:12px; background:var(--primary); border-radius:50%; animation:dotBounce 1.2s infinite; }
+    .loading-dots .dot:nth-child(2) { animation-delay:0.2s; }
+    .loading-dots .dot:nth-child(3) { animation-delay:0.4s; }
     @keyframes dotBounce { 0%,80%,100%{transform:scale(0.8);opacity:0.5} 40%{transform:scale(1.2);opacity:1} }
-    .output-loading p { font-size: 14px; color: var(--gray); }
-    .output-content {
-      flex: 1; display: none; flex-direction: column;
-    }
-    .output-text {
-      flex: 1; background: var(--accent); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 18px; font-size: 14px;
-      color: var(--dark); line-height: 1.8; white-space: pre-wrap;
-      overflow-y: auto; max-height: 480px; min-height: 200px;
-    }
-    .output-text.code-output {
-      font-family: 'Courier New', monospace; font-size: 13px;
-      background: #1e1e2e; color: #cdd6f4; border-color: #313244;
-    }
-    .output-image { max-width: 100%; border-radius: var(--radius-md); display: block; margin: 0 auto; }
-    .output-audio { width: 100%; margin-top: 12px; }
-    .output-meta {
-      display: flex; gap: 16px; margin-top: 12px; padding-top: 12px;
-      border-top: 1px solid var(--border); flex-wrap: wrap;
-    }
-    .output-meta-item { font-size: 11px; color: var(--light-gray); display: flex; align-items: center; gap: 4px; }
-    /* Usage meter */
-    .usage-bar-wrap { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-    .usage-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-bottom: 6px; }
-    .usage-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-    .usage-bar-fill { height: 100%; background: var(--gradient-pink); border-radius: 3px; transition: width 0.5s ease; }
-    /* Improve modal */
-    .improve-modal {
-      position: fixed; inset: 0; background: rgba(44,44,44,0.5);
-      backdrop-filter: blur(4px); z-index: 2000; display: none;
-      align-items: center; justify-content: center; padding: 20px;
-    }
-    .improve-modal.open { display: flex; }
-    .improve-box {
-      background: var(--white); border-radius: var(--radius-lg);
-      padding: 32px; max-width: 480px; width: 100%;
-      animation: modalIn 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    .improve-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
-    @media (max-width: 900px) {
-      .tool-layout { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 768px) {
-      .tool-header-actions .btn-output-action { display: none; }
-    }
+    .loading-label { font-size:14px; color:var(--gray); font-weight:500; }
+    .tool-result-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-sm); display:none; animation:slideUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .tool-result-card.visible { display:block; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .result-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px; }
+    .result-badge { display:inline-flex; align-items:center; gap:6px; background:var(--secondary); color:var(--primary-deep); font-size:12px; font-weight:700; padding:5px 12px; border-radius:var(--radius-full); }
+    .result-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn-result-action { padding:7px 14px; border-radius:var(--radius-full); font-size:12px; font-weight:600; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:5px; font-family:inherit; }
+    .btn-result-action.outline { background:transparent; border:1.5px solid var(--border); color:var(--gray); }
+    .btn-result-action.outline:hover { border-color:var(--primary); color:var(--primary-deep); background:var(--secondary); }
+    .btn-result-action.pink { background:var(--gradient-pink); border:none; color:white; }
+    .btn-result-action.pink:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+    .result-text { background:var(--accent); border:1px solid var(--border); border-radius:var(--radius-md); padding:20px; font-size:14px; color:var(--dark); line-height:1.85; white-space:pre-wrap; overflow-y:auto; max-height:520px; min-height:120px; }
+    .result-text.code-output { font-family:'Courier New',monospace; font-size:13px; background:#1e1e2e; color:#cdd6f4; border-color:#313244; }
+    .result-image { max-width:100%; border-radius:var(--radius-md); display:block; margin:0 auto; }
+    .result-audio { width:100%; margin-top:12px; }
+    .result-meta { display:flex; gap:16px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); flex-wrap:wrap; }
+    .result-meta-item { font-size:11px; color:var(--light-gray); display:flex; align-items:center; gap:4px; }
+    /* ── Free tier blur overlay ── */
+    .free-blur-wrap { position:relative; }
+    .free-blur-overlay { position:absolute; bottom:0; left:0; right:0; height:160px; background:linear-gradient(to bottom, transparent, rgba(255,255,255,0.97)); border-radius:0 0 var(--radius-md) var(--radius-md); display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:20px; gap:10px; }
+    .free-blur-overlay .blur-msg { font-size:13px; font-weight:700; color:var(--dark); text-align:center; }
+    .free-blur-overlay .blur-msg span { color:var(--primary-deep); }
+    .btn-unlock { background:var(--gradient-pink); border:none; border-radius:var(--radius-full); padding:10px 28px; font-size:13px; font-weight:700; color:white; cursor:pointer; font-family:inherit; transition:var(--transition); display:inline-flex; align-items:center; gap:7px; text-decoration:none; }
+    .btn-unlock:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(247,183,200,0.5); }
+    /* ── Free upgrade banner ── */
+    .free-upgrade-banner { background:linear-gradient(135deg,#fff0f5,#fce4ec); border:1.5px solid var(--primary); border-radius:var(--radius-lg); padding:18px 22px; margin-top:20px; display:none; }
+    .free-upgrade-banner.visible { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .free-upgrade-banner .ban-icon { font-size:28px; flex-shrink:0; }
+    .free-upgrade-banner .ban-text { flex:1; min-width:200px; }
+    .free-upgrade-banner .ban-text strong { display:block; font-size:14px; font-weight:800; color:var(--dark); margin-bottom:3px; }
+    .free-upgrade-banner .ban-text span { font-size:12px; color:var(--gray); }
+    .free-upgrade-banner .ban-btn { background:var(--gradient-pink); border:none; border-radius:var(--radius-full); padding:10px 22px; font-size:13px; font-weight:700; color:white; cursor:pointer; font-family:inherit; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+    /* ── Free daily counter ── */
+    .free-daily-bar { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:16px; display:none; }
+    .free-daily-bar.visible { display:flex; align-items:center; gap:12px; }
+    .free-daily-dots { display:flex; gap:5px; }
+    .free-daily-dot { width:10px; height:10px; border-radius:50%; background:var(--border); transition:background 0.3s; }
+    .free-daily-dot.used { background:var(--primary); }
+    .free-daily-text { font-size:12px; color:var(--gray); flex:1; }
+    .free-daily-text strong { color:var(--dark); }
+    /* ── Locked button style ── */
+    .btn-result-action.locked { opacity:0.5; cursor:not-allowed; position:relative; }
+    .btn-result-action.locked::after { content:'🔒 Pro'; position:absolute; top:-22px; left:50%; transform:translateX(-50%); background:#333; color:white; font-size:10px; padding:2px 7px; border-radius:4px; white-space:nowrap; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+    .btn-result-action.locked:hover::after { opacity:1; }
+    /* ── Free tool badge ── */
+    .free-tool-notice { background:var(--secondary); border:1px solid var(--primary); border-radius:var(--radius-md); padding:10px 16px; margin-bottom:16px; font-size:12px; color:var(--primary-deep); display:none; }
+    .free-tool-notice.visible { display:flex; align-items:center; gap:8px; }
+    .improve-modal { position:fixed; inset:0; background:rgba(44,44,44,0.5); backdrop-filter:blur(4px); z-index:2000; display:none; align-items:center; justify-content:center; padding:20px; }
+    .improve-modal.open { display:flex; }
+    .improve-box { background:var(--white); border-radius:var(--radius-lg); padding:32px; max-width:480px; width:100%; animation:modalIn 0.3s cubic-bezier(0.4,0,0.2,1); }
+    @keyframes modalIn { from{opacity:0;transform:scale(0.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .improve-box h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+    .improve-box p  { font-size:13px; color:var(--gray); margin-bottom:16px; }
+    @media(max-width:600px){.tool-content-area{padding:20px 14px 48px}.tool-search-card,.tool-result-card{padding:20px}.result-header{flex-direction:column;align-items:flex-start}.tool-header-actions .btn-result-action{display:none}}
   </style>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -165,7 +128,6 @@
 </nav>
 
 <div class="tool-page">
-  <!-- Tool Header -->
   <div class="tool-header">
     <div class="container">
       <div class="tool-header-inner">
@@ -175,531 +137,451 @@
           <p id="toolHeaderDesc">Powered by Sakura AI</p>
         </div>
         <div class="tool-header-actions">
-          <a href="tools.html" class="btn-output-action outline" style="text-decoration:none;">
-            <i class="fas fa-arrow-left"></i> All Tools
-          </a>
-          <a href="dashboard.html" class="btn-output-action outline" style="text-decoration:none;">
-            <i class="fas fa-folder"></i> My Projects
-          </a>
+          <a href="tools.html" class="btn-result-action outline" style="text-decoration:none;"><i class="fas fa-arrow-left"></i> All Tools</a>
+          <a href="dashboard.html" class="btn-result-action outline" style="text-decoration:none;"><i class="fas fa-folder"></i> My Projects</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Tool Layout -->
-  <div class="container">
-    <div class="tool-layout">
+  <div class="tool-content-area">
 
-      <!-- Input Panel -->
-      <div class="tool-input-panel">
-        <h3><i class="fas fa-sliders-h" style="color:var(--primary-deep)"></i> Input</h3>
-        <div id="toolInputFields">
-          <!-- Dynamically populated based on tool -->
-        </div>
+    <!-- Single-line search bar -->
+    <div class="search-bar-wrap">
+      <input type="text" class="search-input" id="askInput" placeholder="Ask anything..." autocomplete="off" onkeydown="if(event.key==='Enter')runTool()" />
+      <button class="search-btn" id="runBtn" onclick="runTool()">
+        <span id="runBtnText"><i class="fas fa-paper-plane"></i> Send</span>
+        <span id="runBtnLoader" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
+      </button>
+    </div>
 
-        <!-- Usage meter -->
-        <div class="usage-bar-wrap" id="usageMeter">
-          <div class="usage-bar-label">
-            <span>Monthly Usage</span>
-            <span id="usageText">— / —</span>
-          </div>
-          <div class="usage-bar"><div class="usage-bar-fill" id="usageBarFill" style="width:0%"></div></div>
-        </div>
-      </div>
+    <!-- Free daily counter (shown only for free users) -->
+    <div class="free-daily-bar" id="freeDailyBar">
+      <div class="free-daily-dots" id="freeDailyDots"></div>
+      <div class="free-daily-text" id="freeDailyText">Loading...</div>
+      <a href="pricing.html" class="btn-unlock" style="padding:6px 16px;font-size:11px;">⚡ Upgrade</a>
+    </div>
 
-      <!-- Output Panel -->
-      <div class="tool-output-panel">
-        <div class="output-header">
-          <h3><i class="fas fa-magic" style="color:var(--primary-deep)"></i> Output</h3>
-          <div class="output-actions" id="outputActions" style="display:none;">
-            <button class="btn-output-action outline" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
-            <button class="btn-output-action outline" onclick="openImproveModal()"><i class="fas fa-wand-magic-sparkles"></i> Improve</button>
-            <button class="btn-output-action outline" onclick="regenerate()"><i class="fas fa-redo"></i> Regenerate</button>
-            <button class="btn-output-action pink" onclick="saveProject()"><i class="fas fa-save"></i> Save</button>
-          </div>
-        </div>
+    <!-- Free tool notice -->
+    <div class="free-tool-notice" id="freeToolNotice">
+      <i class="fas fa-info-circle"></i>
+      <span>Free plan: 6 basic tools available. <a href="pricing.html" style="color:var(--primary-deep);font-weight:700;">Upgrade</a> to unlock all 35+ tools.</span>
+    </div>
 
-        <!-- Empty state -->
-        <div class="output-empty" id="outputEmpty">
-          <div class="empty-icon">✨</div>
-          <p>Fill in the fields on the left<br>and click <strong>Generate</strong> to get your AI result.</p>
-        </div>
+    <!-- Usage bar -->
+    <div class="usage-bar-wrap" id="usageMeter">
+      <div class="usage-bar-label"><span>Monthly Usage</span><span id="usageText">— / —</span></div>
+      <div class="usage-bar"><div class="usage-bar-fill" id="usageBarFill" style="width:0%"></div></div>
+    </div>
 
-        <!-- Loading state -->
-        <div class="output-loading" id="outputLoading">
-          <div class="loading-dots">
-            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-          </div>
-          <p id="loadingText">Generating your result...</p>
-        </div>
+    <div class="tool-loading-card" id="loadingCard">
+      <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <p class="loading-label" id="loadingText">Generating your result...</p>
+    </div>
 
-        <!-- Content state -->
-        <div class="output-content" id="outputContent">
-          <div class="output-text" id="outputText"></div>
-          <div class="output-meta" id="outputMeta"></div>
+    <div class="tool-result-card" id="resultCard">
+      <div class="result-header">
+        <span class="result-badge"><i class="fas fa-magic"></i> Result</span>
+        <div class="result-actions">
+          <button class="btn-result-action outline" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
+          <button class="btn-result-action outline" id="btnImprove" onclick="openImproveModal()"><i class="fas fa-wand-magic-sparkles"></i> Improve</button>
+          <button class="btn-result-action outline" id="btnRegenerate" onclick="regenerate()"><i class="fas fa-redo"></i> Regenerate</button>
+          <button class="btn-result-action pink" id="btnSave" onclick="saveProject()"><i class="fas fa-save"></i> Save</button>
         </div>
       </div>
-
+      <!-- Output text wrapped for potential blur overlay -->
+      <div style="position:relative;" id="outputWrap">
+        <div class="result-text" id="outputText"></div>
+        <!-- Free blur overlay (shown when output is truncated) -->
+        <div class="free-blur-overlay" id="freeBlurOverlay" style="display:none;">
+          <div class="blur-msg">✨ <span>200+ more words</span> hidden — Upgrade to see the full result</div>
+          <a href="pricing.html" class="btn-unlock"><i class="fas fa-lock-open"></i> Unlock Full Result</a>
+        </div>
+      </div>
+      <div class="result-meta" id="outputMeta"></div>
+      <!-- Free upgrade banner (shown after result for free users) -->
+      <div class="free-upgrade-banner" id="freeUpgradeBanner">
+        <div class="ban-icon">🌸</div>
+        <div class="ban-text">
+          <strong>You're on the Free Plan</strong>
+          <span>Upgrade to Pro for full results, 35+ tools, Improve & Regenerate features, and 100x more tokens.</span>
+        </div>
+        <a href="pricing.html" class="ban-btn"><i class="fas fa-rocket"></i> Upgrade to Pro — $29/mo</a>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Improve Modal -->
 <div class="improve-modal" id="improveModal">
   <div class="improve-box">
     <h3>✨ Improve Result</h3>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">Tell the AI how to improve the output:</p>
+    <p>Tell the AI how to improve the output:</p>
     <div class="tool-field">
       <textarea id="improveInstruction" placeholder="e.g. Make it more formal, add more detail, shorten it, translate to Arabic..." rows="4"></textarea>
     </div>
     <div style="display:flex;gap:10px;margin-top:4px;">
-      <button class="btn-output-action pink" style="flex:1;padding:12px;" onclick="submitImprove()">
-        <i class="fas fa-wand-magic-sparkles"></i> Improve
-      </button>
-      <button class="btn-output-action outline" style="flex:1;padding:12px;" onclick="document.getElementById('improveModal').classList.remove('open')">
-        Cancel
-      </button>
+      <button class="btn-result-action pink" style="flex:1;padding:12px;justify-content:center;" onclick="submitImprove()"><i class="fas fa-wand-magic-sparkles"></i> Improve</button>
+      <button class="btn-result-action outline" style="flex:1;padding:12px;justify-content:center;" onclick="document.getElementById('improveModal').classList.remove('open')">Cancel</button>
     </div>
   </div>
 </div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3001/api'
-    : '/api';
+const API_BASE = SAKURA_CONFIG.API_BASE;
+const IS_DEMO  = SAKURA_CONFIG.DEMO_MODE;
 
-  const IS_DEMO = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+let currentTool=null, currentCategory=null, currentProjectId=null, currentOutput=null;
+let authToken = localStorage.getItem('sakura_token');
+let isFreeUser = false;
+let freeDailyRemaining = 5;
 
-  // ── Demo Output Generator ──────────────
-  function getDemoOutput(toolName, params) {
-    const demos = {
-      'article-writer': () => `# ${params.topic || 'AI in the Modern World'}\n\nIn today's rapidly evolving technological landscape, artificial intelligence has become an indispensable tool for professionals and businesses alike. This article explores the key aspects and implications of this transformative technology.\n\n## Introduction\n\nThe rise of AI has fundamentally changed how we approach complex problems. From healthcare to finance, AI-powered solutions are delivering unprecedented results and efficiency gains.\n\n## Key Benefits\n\n1. **Increased Productivity** — AI automates repetitive tasks, freeing humans to focus on creative and strategic work.\n2. **Better Decision Making** — Data-driven insights help organizations make smarter, faster decisions.\n3. **Cost Reduction** — Automation reduces operational costs significantly across industries.\n\n## Challenges and Considerations\n\nDespite its many benefits, AI adoption comes with challenges including data privacy concerns, ethical considerations, and the need for skilled professionals to manage these systems.\n\n## Conclusion\n\nAs AI continues to evolve, organizations that embrace this technology thoughtfully will gain significant competitive advantages. The key is to balance innovation with responsibility.\n\n*Generated by Sakura AI — Demo Mode*`,
+const TOOLS = {
+  'article-writer':      {icon:'📝',title:'Article Writer',      desc:'Generate full blog posts and articles',category:'writing', fields:[{id:'topic',label:'Topic',type:'text',placeholder:'e.g. The future of AI in healthcare'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Healthcare professionals'},{id:'tone',label:'Tone',type:'select',options:['Professional','Casual','Academic','Conversational']},{id:'length',label:'Word Count',type:'select',options:['500','800','1200','2000']}]},
+  'email-writer':        {icon:'📧',title:'Email Writer',         desc:'Write professional emails',category:'writing', fields:[{id:'recipient',label:'Recipient',type:'text',placeholder:'e.g. Client, Manager, Team'},{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Project update'},{id:'keyPoints',label:'Key Points',type:'textarea',placeholder:'What should the email cover?'},{id:'tone',label:'Tone',type:'select',options:['Professional','Formal','Friendly','Urgent']}]},
+  'social-media-posts':  {icon:'📱',title:'Social Media Posts',  desc:'Create engaging social content',category:'writing', fields:[{id:'platform',label:'Platform',type:'select',options:['Instagram','Twitter/X','LinkedIn','Facebook','TikTok']},{id:'topic',label:'Topic / Product',type:'text',placeholder:'What is the post about?'},{id:'tone',label:'Tone',type:'select',options:['Engaging','Professional','Humorous','Inspirational']},{id:'goal',label:'Goal',type:'select',options:['Engagement','Brand Awareness','Sales','Education']}]},
+  'text-summarizer':     {icon:'🔄',title:'Text Summarizer',      desc:'Summarize long documents instantly',category:'writing', fields:[{id:'text',label:'Text to Summarize',type:'textarea',placeholder:'Paste your text here...',rows:8},{id:'length',label:'Summary Length',type:'select',options:['Brief (2-3 sentences)','Medium (1 paragraph)','Detailed (3-5 paragraphs)']}]},
+  'text-rewriter':       {icon:'✨',title:'Text Rewriter',        desc:'Rewrite and improve any text',category:'writing', fields:[{id:'text',label:'Text to Rewrite',type:'textarea',placeholder:'Paste your text here...',rows:6},{id:'tone',label:'Target Tone',type:'select',options:['Professional','Casual','Academic','Persuasive','Simple']},{id:'goal',label:'Goal',type:'select',options:['Improve clarity','Make it shorter','Make it longer','Fix grammar','Change tone']}]},
+  'marketing-copy':      {icon:'🎯',title:'Marketing Copy',       desc:'High-converting marketing content',category:'writing', fields:[{id:'product',label:'Product / Service',type:'text',placeholder:'e.g. AI writing tool'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Small business owners'},{id:'mainBenefit',label:'Main Benefit',type:'text',placeholder:'e.g. Save 10 hours per week'},{id:'cta',label:'Call to Action',type:'text',placeholder:'e.g. Start free trial'}]},
+  'code-generator':      {icon:'⚡',title:'Code Generator',       desc:'Generate code in any language',category:'code', fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Rust','Swift','Kotlin','SQL']},{id:'framework',label:'Framework (optional)',type:'text',placeholder:'e.g. React, Django, Express'},{id:'description',label:'What should the code do?',type:'textarea',placeholder:'Describe the function or feature you need...',rows:5}]},
+  'bug-fixer':           {icon:'🐛',title:'Bug Fixer',            desc:'Detect and fix code bugs',category:'code', fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Paste Your Code',type:'textarea',placeholder:'Paste the buggy code here...',rows:10}]},
+  'code-explainer':      {icon:'📖',title:'Code Explainer',       desc:'Understand code in plain language',category:'code', fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Code to Explain',type:'textarea',placeholder:'Paste the code you want explained...',rows:10}]},
+  'documentation-writer':{icon:'📄',title:'Documentation Writer', desc:'Auto-generate documentation',category:'code', fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Code to Document',type:'textarea',placeholder:'Paste your code here...',rows:10}]},
+  'automation-scripts':  {icon:'🤖',title:'Automation Scripts',  desc:'Generate automation scripts',category:'code', fields:[{id:'language',label:'Language',type:'select',options:['Python','Bash','PowerShell','JavaScript','Other']},{id:'task',label:'Task to Automate',type:'textarea',placeholder:'Describe what you want to automate...',rows:5}]},
+  'business-plan':       {icon:'📊',title:'Business Plan Writer', desc:'Generate comprehensive business plans',category:'business', fields:[{id:'businessName',label:'Business Name',type:'text',placeholder:'e.g. TechFlow Solutions'},{id:'industry',label:'Industry',type:'text',placeholder:'e.g. SaaS, E-commerce, Healthcare'},{id:'targetMarket',label:'Target Market',type:'text',placeholder:'e.g. Small businesses in the Middle East'},{id:'investment',label:'Initial Investment',type:'text',placeholder:'e.g. $50,000'}]},
+  'cv-resume':           {icon:'📄',title:'CV & Resume Writer',   desc:'Create professional CVs',category:'business', fields:[{id:'jobTitle',label:'Target Job Title',type:'text',placeholder:'e.g. Senior Software Engineer'},{id:'experience',label:'Work Experience',type:'textarea',placeholder:'List your work experience...',rows:4},{id:'skills',label:'Key Skills',type:'text',placeholder:'e.g. Python, React, Project Management'},{id:'education',label:'Education',type:'text',placeholder:'e.g. BSc Computer Science, MIT 2020'},{id:'achievements',label:'Key Achievements',type:'textarea',placeholder:'Your notable achievements...',rows:3}]},
+  'presentation-builder':{icon:'🖥️',title:'Presentation Builder', desc:'Create slide outlines and content',category:'business', fields:[{id:'topic',label:'Presentation Topic',type:'text',placeholder:'e.g. Q3 Sales Report'},{id:'slides',label:'Number of Slides',type:'select',options:['5','8','10','15','20']},{id:'audience',label:'Audience',type:'text',placeholder:'e.g. Investors, Students, Executives'}]},
+  'sop-workflow':        {icon:'📋',title:'SOP & Workflow Builder',desc:'Create standard operating procedures',category:'business', fields:[{id:'process',label:'Process Name',type:'text',placeholder:'e.g. Employee Onboarding'},{id:'department',label:'Department',type:'text',placeholder:'e.g. HR, Customer Support'},{id:'steps',label:'Key Steps (optional)',type:'textarea',placeholder:'List any known steps...',rows:4}]},
+  'formal-email':        {icon:'✉️',title:'Formal Email Writer',  desc:'Write formal business emails',category:'business', fields:[{id:'recipient',label:'Recipient',type:'text',placeholder:'e.g. CEO, Client, Government Office'},{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Partnership Proposal'},{id:'keyPoints',label:'Key Points',type:'textarea',placeholder:'What should the email cover?',rows:4}]},
+  'lesson-simplifier':   {icon:'🎓',title:'Lesson Simplifier',    desc:'Simplify complex topics',category:'study', fields:[{id:'topic',label:'Topic to Explain',type:'text',placeholder:'e.g. Quantum entanglement, Calculus derivatives'},{id:'level',label:'Student Level',type:'select',options:['Elementary','Middle School','High School','University','Adult Learner']}]},
+  'qa-generator':        {icon:'❓',title:'Q&A Generator',        desc:'Generate practice questions',category:'study', fields:[{id:'topic',label:'Topic / Subject',type:'text',placeholder:'e.g. World War II, Photosynthesis'},{id:'count',label:'Number of Questions',type:'select',options:['5','10','15','20']},{id:'difficulty',label:'Difficulty',type:'select',options:['Easy','Medium','Hard','Mixed']}]},
+  'study-plan':          {icon:'📅',title:'Study Plan Creator',   desc:'Create personalized study plans',category:'study', fields:[{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Mathematics, IELTS, Programming'},{id:'examDate',label:'Exam / Goal Date',type:'text',placeholder:'e.g. 3 months from now, June 15'},{id:'currentLevel',label:'Current Level',type:'select',options:['Beginner','Intermediate','Advanced']},{id:'hoursPerDay',label:'Hours Available Per Day',type:'select',options:['1','2','3','4','5+']}]},
+  'text-to-speech':      {icon:'🔊',title:'Text to Speech',       desc:'Convert text to natural audio',category:'audio', fields:[{id:'text',label:'Text to Convert',type:'textarea',placeholder:'Enter the text you want to convert to speech...',rows:6},{id:'language',label:'Language',type:'select',options:['English','Arabic']},{id:'stability',label:'Voice Stability',type:'select',options:['0.3','0.5','0.7','0.9']}]},
+  'text-to-image':       {icon:'🖼️',title:'Text to Image',        desc:'Generate images from descriptions',category:'image', fields:[{id:'prompt',label:'Image Description',type:'textarea',placeholder:'Describe the image you want to generate...',rows:4},{id:'style',label:'Style',type:'select',options:['photographic','digital-art','anime','cinematic','fantasy-art','neon-punk','3d-model']},{id:'negativePrompt',label:'Negative Prompt (optional)',type:'text',placeholder:'What to avoid in the image'}]},
+  'excel-csv-analyzer':  {icon:'📈',title:'Data Analyzer',        desc:'Analyze data and get insights',category:'data', fields:[{id:'data',label:'Paste Your Data (CSV or table)',type:'textarea',placeholder:'Paste your CSV data or table here...',rows:8},{id:'question',label:'What do you want to know?',type:'text',placeholder:'e.g. What are the top trends?'}]},
+  'product-description': {icon:'🛒',title:'Product Description',  desc:'Write compelling product descriptions',category:'specialized', fields:[{id:'productName',label:'Product Name',type:'text',placeholder:'e.g. Wireless Headphones'},{id:'features',label:'Key Features',type:'textarea',placeholder:'List the main features...',rows:4},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Gamers, Professionals'}]},
+  'ad-copy':             {icon:'📣',title:'Ad Copy Generator',    desc:'Create high-converting ads',category:'specialized', fields:[{id:'product',label:'Product / Service',type:'text',placeholder:'e.g. Online fitness app'},{id:'platform',label:'Platform',type:'select',options:['Facebook','Google','TikTok','Instagram','LinkedIn']},{id:'goal',label:'Campaign Goal',type:'select',options:['Sales','Leads','Brand Awareness','App Downloads']},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Women 25-40 interested in fitness'}]},
+  'customer-support':    {icon:'💬',title:'Customer Support',     desc:'Generate professional support responses',category:'specialized', fields:[{id:'issue',label:'Customer Issue',type:'textarea',placeholder:'Describe the customer issue...',rows:4},{id:'tone',label:'Tone',type:'select',options:['Empathetic','Professional','Friendly','Formal']}]},
+  'social-calendar':     {icon:'📲',title:'Social Media Calendar',desc:'Plan a full month of social content',category:'specialized', fields:[{id:'brand',label:'Brand / Business',type:'text',placeholder:'e.g. Coffee Shop, Tech Startup'},{id:'platform',label:'Platform',type:'select',options:['Instagram','Twitter/X','LinkedIn','Facebook','TikTok']},{id:'month',label:'Month',type:'text',placeholder:'e.g. July 2025'}]}
+};
 
-      'email-writer': () => `Subject: ${params.subject || 'Follow-up on Our Recent Discussion'}\n\nDear ${params.recipient || 'Team'},\n\nI hope this message finds you well. I am writing to follow up on our recent discussion and provide you with an update on the key points we covered.\n\n${params.keyPoints || 'As discussed, we are moving forward with the proposed plan and would like to schedule a follow-up meeting to review progress.'}\n\nPlease let me know if you have any questions or require additional information. I look forward to hearing from you.\n\nBest regards,\n[Your Name]\n\n*Generated by Sakura AI — Demo Mode*`,
+(function init() {
+  if (!authToken) {
+    window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.href);
+    return;
+  }
+  const params = new URLSearchParams(window.location.search);
+  const toolId = params.get('tool');
+  if (!toolId || !TOOLS[toolId]) { window.location.href = 'tools.html'; return; }
 
-      'social-media-posts': () => `🌟 ${params.topic || 'Exciting News'} — You won't want to miss this!\n\n✨ We're thrilled to share something amazing with our community. Here's what you need to know:\n\n📌 Key highlight #1 — Game-changing results\n📌 Key highlight #2 — Proven success stories\n📌 Key highlight #3 — Available for everyone\n\n💬 Drop a comment below and let us know your thoughts!\n\n#Innovation #AI #Technology #Growth #Success\n\n---\n\n🔥 Alternative version:\n\nBig things are happening! 🚀 ${params.topic || 'Our latest update'} is here and it's everything you've been waiting for. Swipe to learn more ➡️\n\n*Generated by Sakura AI — Demo Mode*`,
+  currentTool     = toolId;
+  const tool      = TOOLS[toolId];
+  currentCategory = tool.category;
 
-      'text-summarizer': () => `📋 **Summary**\n\nThe provided text covers several important topics and key concepts. Here is a concise summary of the main points:\n\n• The text introduces the core subject matter and establishes context for the reader.\n• Several key arguments are presented with supporting evidence and examples.\n• The author draws conclusions based on the analysis provided throughout.\n• Recommendations or next steps are outlined for practical application.\n\n**Key Takeaways:**\n1. The main theme revolves around understanding and applying the core concepts.\n2. Evidence supports the central argument effectively.\n3. Practical implications are clearly outlined for implementation.\n\n*Generated by Sakura AI — Demo Mode*`,
+  document.title = tool.title + ' — Sakura AI';
+  document.getElementById('toolHeaderIcon').textContent  = tool.icon;
+  document.getElementById('toolHeaderTitle').textContent = tool.title;
+  document.getElementById('toolHeaderDesc').textContent  = tool.desc;
 
-      'text-rewriter': () => `✨ **Rewritten Version:**\n\n${params.text ? params.text.substring(0, 50) + '...' : 'Your text'} has been professionally rewritten with improved clarity, flow, and impact.\n\nThe revised content maintains your original message while enhancing readability and engagement. Key improvements include:\n\n• Clearer sentence structure and flow\n• More precise and impactful word choices\n• Better paragraph organization\n• Enhanced overall readability\n\nThe rewritten version is optimized for your target audience and achieves the desired tone and style.\n\n*Generated by Sakura AI — Demo Mode*`,
+  loadUsage();
 
-      'marketing-copy': () => `🎯 **Marketing Copy for ${params.product || 'Your Product'}**\n\n**Headline:**\nTransform Your ${params.audience || 'Business'} with the Power of AI — Starting Today!\n\n**Subheadline:**\n${params.mainBenefit || 'Save time, boost results, and grow faster than ever before.'}\n\n**Body Copy:**\nAre you tired of spending hours on tasks that could be automated? Our solution helps ${params.audience || 'professionals'} like you achieve more in less time.\n\n✅ Proven results with 10,000+ satisfied customers\n✅ Easy to use — no technical skills required\n✅ 7-day free trial — no credit card needed\n\n**Call to Action:**\n👉 ${params.cta || 'Start Your Free Trial Today'}\n\n*Generated by Sakura AI — Demo Mode*`,
+  const user = JSON.parse(localStorage.getItem('sakura_user') || '{}');
+  if (user.firstName) document.getElementById('navUserName').textContent = user.firstName;
 
-      'code-generator': () => `// ${params.description || 'Generated Code'}\n// Language: ${params.language || 'JavaScript'}\n\n${params.language === 'Python' ? `def process_data(data):
-    """
-    Process and analyze the provided data.
-    Returns processed results.
-    """
-    results = []
-    
-    for item in data:
-        # Apply transformation logic
-        processed = {
-            'id': item.get('id'),
-            'value': item.get('value', 0) * 2,
-            'status': 'processed'
-        }
-        results.append(processed)
-    
-    return results
+  // Check if free user from stored data
+  if (user.plan === 'free' || !user.plan) {
+    isFreeUser = true;
+    document.getElementById('freeToolNotice').classList.add('visible');
+    updateFreeDailyBar(5); // Default, will be updated after first request
+    lockProButtons();
+  }
+})();
 
-# Example usage
-if __name__ == "__main__":
-    sample_data = [{'id': 1, 'value': 10}, {'id': 2, 'value': 20}]
-    output = process_data(sample_data)
-    print(f"Processed {len(output)} items successfully")` : `function processData(data) {
-  /**
-   * Process and analyze the provided data
-   * @param {Array} data - Input data array
-   * @returns {Array} Processed results
-   */
-  const results = data.map(item => ({
-    id: item.id,
-    value: item.value * 2,
-    status: 'processed',
-    timestamp: new Date().toISOString()
-  }));
-  
-  return results.filter(item => item.value > 0);
+function lockProButtons() {
+  var btnImprove    = document.getElementById('btnImprove');
+  var btnRegenerate = document.getElementById('btnRegenerate');
+  var btnSave       = document.getElementById('btnSave');
+  if (btnImprove)    { btnImprove.classList.add('locked');    btnImprove.onclick    = function(){ showUpgradeToast('Improve'); }; }
+  if (btnRegenerate) { btnRegenerate.classList.add('locked'); btnRegenerate.onclick = function(){ showUpgradeToast('Regenerate'); }; }
+  if (btnSave)       { btnSave.classList.add('locked');       btnSave.onclick       = function(){ showUpgradeToast('Save'); }; }
 }
 
-// Example usage
-const sampleData = [{ id: 1, value: 10 }, { id: 2, value: 20 }];
-const output = processData(sampleData);
-console.log(\`Processed \${output.length} items successfully\`);`}\n\n// Generated by Sakura AI — Demo Mode`,
+function showUpgradeToast(feature) {
+  showToast('🔒 ' + feature + ' requires a paid plan. <a href="pricing.html" style="color:white;text-decoration:underline;">Upgrade →</a>');
+}
 
-      'bug-fixer': () => `🐛 **Bug Analysis & Fix**\n\n**Issues Found:**\n1. Potential null reference error on line 3\n2. Missing error handling for async operations\n3. Variable scope issue in the loop\n\n**Fixed Code:**\n\`\`\`\n// Fixed version with proper error handling\ntry {\n  const result = await fetchData();\n  if (!result) throw new Error('No data returned');\n  \n  for (let i = 0; i < result.length; i++) {\n    const item = result[i]; // Fixed scope issue\n    processItem(item);\n  }\n} catch (error) {\n  console.error('Error:', error.message);\n  // Handle error appropriately\n}\n\`\`\`\n\n**Explanation:**\n- Added null check before processing\n- Wrapped in try-catch for error handling\n- Fixed variable scoping in the loop\n\n*Generated by Sakura AI — Demo Mode*`,
+function updateFreeDailyBar(remaining) {
+  var bar  = document.getElementById('freeDailyBar');
+  var dots = document.getElementById('freeDailyDots');
+  var text = document.getElementById('freeDailyText');
+  if (!bar) return;
+  bar.classList.add('visible');
+  var limit = 5;
+  var used  = limit - remaining;
+  dots.innerHTML = '';
+  for (var i = 0; i < limit; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'free-daily-dot' + (i < used ? ' used' : '');
+    dots.appendChild(dot);
+  }
+  if (remaining <= 0) {
+    text.innerHTML = '<strong>Daily limit reached.</strong> Resets tomorrow. <a href="pricing.html" style="color:var(--primary-deep);">Upgrade for unlimited</a>';
+    document.getElementById('runBtn').disabled = true;
+    document.getElementById('askInput').placeholder = 'Daily limit reached — upgrade to continue';
+  } else {
+    text.innerHTML = '<strong>' + remaining + ' of ' + limit + '</strong> free requests remaining today';
+  }
+}
 
-      'code-explainer': () => `📖 **Code Explanation**\n\nThis code performs the following operations:\n\n**Overview:**\nThe code implements a data processing function that takes input, applies transformations, and returns results.\n\n**Step-by-Step Breakdown:**\n\n1. **Initialization** — Sets up variables and data structures needed for processing\n2. **Input Validation** — Checks that the input meets required conditions\n3. **Core Logic** — Applies the main transformation or computation\n4. **Output Formatting** — Structures the results in the expected format\n5. **Return/Output** — Sends back the processed data\n\n**Key Concepts Used:**\n• Functional programming patterns\n• Error handling and validation\n• Data transformation techniques\n\n*Generated by Sakura AI — Demo Mode*`,
+async function runTool() {
+  var prompt = document.getElementById('askInput').value.trim();
+  if (!prompt) { showToast('Please type your request first'); return; }
+  var params = { prompt: prompt };
 
-      'business-plan': () => `📊 **Business Plan: ${params.businessName || 'Your Business'}**\n\n## Executive Summary\n${params.businessName || 'Our company'} is a ${params.industry || 'technology'} company targeting ${params.targetMarket || 'the regional market'}. With an initial investment of ${params.investment || '$50,000'}, we aim to capture significant market share within 12 months.\n\n## Market Analysis\n- **Market Size:** $2.5B and growing at 15% annually\n- **Target Segment:** ${params.targetMarket || 'Small to medium businesses'}\n- **Competition:** 3-5 major players with room for differentiation\n\n## Products & Services\nOur core offering provides unique value through innovation, quality, and customer-centric design.\n\n## Financial Projections\n| Year | Revenue | Expenses | Profit |\n|------|---------|----------|--------|\n| Y1   | $120K   | $95K     | $25K   |\n| Y2   | $280K   | $180K    | $100K  |\n| Y3   | $500K   | $280K    | $220K  |\n\n## Go-to-Market Strategy\n1. Digital marketing and social media presence\n2. Strategic partnerships and referral programs\n3. Content marketing and thought leadership\n\n*Generated by Sakura AI — Demo Mode*`,
+  setRunLoading(true);
+  showLoading();
 
-      'cv-resume': () => `# ${params.jobTitle || 'Professional'} — Resume\n\n## Contact Information\nName: [Your Name] | Email: your@email.com | LinkedIn: linkedin.com/in/yourname\n\n## Professional Summary\nResults-driven ${params.jobTitle || 'professional'} with proven expertise in ${params.skills || 'key technical and soft skills'}. Demonstrated track record of delivering high-impact results and driving organizational success.\n\n## Work Experience\n${params.experience || '**Senior Role** — Company Name (2020–Present)\n• Led cross-functional teams to deliver projects on time and within budget\n• Increased efficiency by 35% through process optimization\n• Managed stakeholder relationships at executive level'}\n\n## Education\n${params.education || 'Bachelor\'s Degree — University Name (2020)'}\n\n## Key Skills\n${params.skills || 'Leadership, Communication, Problem-solving, Technical expertise'}\n\n## Achievements\n${params.achievements || '• Award or recognition\n• Significant project completion\n• Measurable business impact'}\n\n*Generated by Sakura AI — Demo Mode*`,
-
-      'lesson-simplifier': () => `🎓 **${params.topic || 'Topic'} — Simplified Explanation**\n\n**What is it?**\nImagine ${params.topic || 'this concept'} like a simple everyday example that everyone can understand. At its core, it's about understanding how things work together in a system.\n\n**The Simple Version:**\nThink of it this way — just like how a recipe has ingredients and steps, ${params.topic || 'this topic'} has its own components that work together to create a result.\n\n**Key Points to Remember:**\n1. 📌 The basic principle is straightforward once you break it down\n2. 📌 It builds on concepts you already know\n3. 📌 Practice makes it easier to understand\n\n**Real-World Example:**\nIn everyday life, you can see this concept at work when you [practical example relevant to the topic].\n\n**Quick Summary:**\n${params.topic || 'This topic'} = [Simple one-line definition that sticks]\n\n*Generated by Sakura AI — Demo Mode*`,
-
-      'qa-generator': () => `❓ **Practice Questions: ${params.topic || 'General Knowledge'}**\n\n**Easy Level:**\n1. What is the basic definition of ${params.topic || 'this subject'}?\n   ✅ Answer: [Clear, concise answer]\n\n2. Name three key components of ${params.topic || 'this topic'}.\n   ✅ Answer: Component 1, Component 2, Component 3\n\n**Medium Level:**\n3. How does ${params.topic || 'this concept'} apply in real-world scenarios?\n   ✅ Answer: [Detailed explanation with examples]\n\n4. What are the main differences between the two approaches?\n   ✅ Answer: [Comparative analysis]\n\n**Hard Level:**\n5. Analyze the long-term implications of ${params.topic || 'this subject'} on modern society.\n   ✅ Answer: [Critical thinking response required]\n\n*Generated by Sakura AI — Demo Mode*`,
-
-      'study-plan': () => `📅 **Personalized Study Plan: ${params.subject || 'Your Subject'}**\n\n**Goal:** Master ${params.subject || 'the subject'} by ${params.examDate || 'your target date'}\n**Level:** ${params.currentLevel || 'Intermediate'} | **Daily Time:** ${params.hoursPerDay || '2'} hours\n\n## Week 1-2: Foundation\n- [ ] Review core concepts and fundamentals\n- [ ] Complete introductory exercises\n- [ ] Watch 2-3 tutorial videos per day\n- [ ] Take notes and create summary sheets\n\n## Week 3-4: Deep Dive\n- [ ] Study advanced topics in detail\n- [ ] Practice with real examples\n- [ ] Join study groups or forums\n- [ ] Complete practice tests\n\n## Week 5-6: Practice & Review\n- [ ] Full practice exams under timed conditions\n- [ ] Review weak areas identified in practice tests\n- [ ] Create flashcards for key concepts\n- [ ] Final review of all materials\n\n**Daily Schedule:**\n- Morning (${Math.ceil(parseInt(params.hoursPerDay||2)/2)}h): New material\n- Evening (${Math.floor(parseInt(params.hoursPerDay||2)/2)}h): Review & practice\n\n*Generated by Sakura AI — Demo Mode*`,
-
-      'text-to-speech': () => `🔊 **Text-to-Speech — Demo Mode**\n\nIn demo mode, audio generation requires a live backend server.\n\nYour text has been received:\n"${(params.text || 'Your text here').substring(0, 100)}..."\n\n**Settings:**\n- Language: ${params.language || 'English'}\n- Voice Stability: ${params.stability || '0.5'}\n\nTo generate real audio, please deploy the backend server. The full version supports:\n✅ Natural-sounding voices in Arabic & English\n✅ Multiple voice styles\n✅ MP3 download\n\n*Demo Mode — Backend required for audio generation*`,
-
-      'text-to-image': () => `🎨 **Image Generation — Demo Mode**\n\nIn demo mode, image generation requires a live backend server.\n\nYour prompt has been received:\n"${(params.prompt || 'Your image description').substring(0, 100)}"\n\n**Settings:**\n- Style: ${params.style || 'photographic'}\n- Negative prompt: ${params.negativePrompt || 'none'}\n\nTo generate real images, please deploy the backend server. The full version supports:\n✅ High-quality AI image generation\n✅ Multiple artistic styles\n✅ Image download\n\n*Demo Mode — Backend required for image generation*`,
-
-      'excel-csv-analyzer': () => `📊 **Data Analysis Report**\n\n**Dataset Overview:**\nYour data has been analyzed successfully. Here are the key insights:\n\n**Summary Statistics:**\n- Total Records: ~150 rows detected\n- Columns: Multiple data fields identified\n- Data Quality: Good (minimal missing values)\n\n**Key Findings:**\n1. 📈 **Trend Analysis** — Upward trend observed in primary metrics over time\n2. 🏆 **Top Performers** — Top 20% of entries account for 80% of total value (Pareto principle)\n3. ⚠️ **Anomalies** — 3 outliers detected that may require attention\n4. 📊 **Distribution** — Data follows a normal distribution pattern\n\n**Answer to Your Question:**\n"${params.question || 'General analysis'}"\n\nBased on the data provided, the analysis shows strong performance in key areas with opportunities for improvement in specific segments.\n\n**Recommendations:**\n• Focus resources on top-performing segments\n• Investigate and address the identified anomalies\n• Consider seasonal patterns in future planning\n\n*Generated by Sakura AI — Demo Mode*`,
-    };
-
-    const generator = demos[toolName];
-    return generator ? generator() : `✨ **${toolName} Result**\n\nYour request has been processed successfully in demo mode.\n\nThis is a sample output demonstrating the capabilities of Sakura AI. In the full version with a live backend, you would receive real AI-generated content tailored to your specific inputs.\n\n*Generated by Sakura AI — Demo Mode*`;
+  if (IS_DEMO) {
+    setRunLoading(false);
+    showResult(
+      'This tool requires a live backend server.\n\n' +
+      'To use this tool: Deploy the backend server and connect it to this frontend.',
+      'text', 0, null
+    );
+    return;
   }
 
-  // ── State ──────────────────────────────
-  let currentTool     = null;
-  let currentCategory = null;
-  let currentProjectId = null;
-  let currentOutput   = null;
-  let authToken       = localStorage.getItem('sakura_token');
+  try {
+    var res  = await fetch(API_BASE + '/tools/run', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer ' + authToken},
+      body: JSON.stringify({toolName: currentTool, params: params})
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      if (res.status === 401) { window.location.href = 'auth.html'; return; }
+      if (res.status === 429 && data.isFreeLimit) {
+        // Free daily limit exceeded
+        updateFreeDailyBar(0);
+        showResult('⏰ You\'ve used all 5 free daily requests. <a href="pricing.html" style="color:var(--primary-deep);font-weight:700;">Upgrade to Pro</a> for unlimited access.', 'error', 0, null);
+        return;
+      }
+      if (res.status === 403 && data.isFreeLimit) {
+        // Free plan tool restriction
+        showResult('🔒 This tool requires a paid plan. <a href="pricing.html" style="color:var(--primary-deep);font-weight:700;">Upgrade to unlock all 35+ tools →</a>', 'error', 0, null);
+        return;
+      }
+      if (res.status === 403 && data.code === 'SUBSCRIPTION_REQUIRED') {
+        showResult('Active subscription required. <a href="pricing.html" style="color:var(--primary-deep)">Upgrade your plan</a>', 'error', 0, null);
+        return;
+      }
+      if (res.status === 402) {
+        showResult('Insufficient credits. <a href="pricing.html" style="color:var(--primary-deep)">Get more credits</a>', 'error', 0, null);
+        return;
+      }
+      throw new Error(data.error || 'Tool execution failed');
+    }
+    // Update free user state from response
+    if (data.isFreeUser) {
+      isFreeUser = true;
+      if (data.freeDailyRemaining !== null && data.freeDailyRemaining !== undefined) {
+        freeDailyRemaining = data.freeDailyRemaining;
+        updateFreeDailyBar(freeDailyRemaining);
+      }
+    }
+    if (data.jobId) { pollJobStatus(data.jobId); }
+    else { showResult(data.output, data.outputType, data.tokensUsed, data.projectId, data.isTruncated); loadUsage(); }
+  } catch(err) {
+    showResult(err.message || 'Something went wrong. Please try again.', 'error', 0, null);
+  } finally {
+    setRunLoading(false);
+  }
+}
 
-  // ── Tool Definitions ───────────────────
-  const TOOLS = {
-    'article-writer':       { icon:'📝', title:'Article Writer',       desc:'Generate full blog posts and articles', category:'writing',  fields:[{id:'topic',label:'Topic',type:'text',placeholder:'e.g. The future of AI in healthcare'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Healthcare professionals'},{id:'tone',label:'Tone',type:'select',options:['Professional','Casual','Academic','Conversational']},{id:'length',label:'Word Count',type:'select',options:['500','800','1200','2000']}] },
-    'email-writer':         { icon:'📧', title:'Email Writer',          desc:'Write professional emails', category:'writing',  fields:[{id:'recipient',label:'Recipient',type:'text',placeholder:'e.g. Client, Manager, Team'},{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Project update, Meeting request'},{id:'keyPoints',label:'Key Points',type:'textarea',placeholder:'What should the email cover?'},{id:'tone',label:'Tone',type:'select',options:['Professional','Formal','Friendly','Urgent']}] },
-    'social-media-posts':   { icon:'📱', title:'Social Media Posts',    desc:'Create engaging social content', category:'writing',  fields:[{id:'platform',label:'Platform',type:'select',options:['Instagram','Twitter/X','LinkedIn','Facebook','TikTok']},{id:'topic',label:'Topic / Product',type:'text',placeholder:'What is the post about?'},{id:'tone',label:'Tone',type:'select',options:['Engaging','Professional','Humorous','Inspirational']},{id:'goal',label:'Goal',type:'select',options:['Engagement','Brand Awareness','Sales','Education']}] },
-    'text-summarizer':      { icon:'🔄', title:'Text Summarizer',       desc:'Summarize long documents instantly', category:'writing',  fields:[{id:'text',label:'Text to Summarize',type:'textarea',placeholder:'Paste your text here...',rows:8},{id:'length',label:'Summary Length',type:'select',options:['Brief (2-3 sentences)','Medium (1 paragraph)','Detailed (3-5 paragraphs)']}] },
-    'text-rewriter':        { icon:'✨', title:'Text Rewriter',         desc:'Rewrite and improve any text', category:'writing',  fields:[{id:'text',label:'Text to Rewrite',type:'textarea',placeholder:'Paste your text here...',rows:6},{id:'tone',label:'Target Tone',type:'select',options:['Professional','Casual','Academic','Persuasive','Simple']},{id:'goal',label:'Goal',type:'select',options:['Improve clarity','Make it shorter','Make it longer','Fix grammar','Change tone']}] },
-    'marketing-copy':       { icon:'🎯', title:'Marketing Copy',        desc:'High-converting marketing content', category:'writing',  fields:[{id:'product',label:'Product / Service',type:'text',placeholder:'e.g. AI writing tool'},{id:'audience',label:'Target Audience',type:'text',placeholder:'e.g. Small business owners'},{id:'mainBenefit',label:'Main Benefit',type:'text',placeholder:'e.g. Save 10 hours per week'},{id:'cta',label:'Call to Action',type:'text',placeholder:'e.g. Start free trial'}] },
-    'code-generator':       { icon:'⚡', title:'Code Generator',        desc:'Generate code in any language', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Rust','Swift','Kotlin','SQL']},{id:'framework',label:'Framework (optional)',type:'text',placeholder:'e.g. React, Django, Express'},{id:'description',label:'What should the code do?',type:'textarea',placeholder:'Describe the function or feature you need...',rows:5}] },
-    'bug-fixer':            { icon:'🐛', title:'Bug Fixer',             desc:'Detect and fix code bugs', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Paste Your Code',type:'textarea',placeholder:'Paste the buggy code here...',rows:10}] },
-    'code-explainer':       { icon:'📖', title:'Code Explainer',        desc:'Understand code in plain language', category:'code',    fields:[{id:'language',label:'Programming Language',type:'select',options:['JavaScript','Python','TypeScript','Java','C++','C#','PHP','Go','Other']},{id:'code',label:'Code to Explain',type:'textarea',placeholder:'Paste the code you want explained...',rows:10}] },
-    'business-plan':        { icon:'📊', title:'Business Plan Writer',  desc:'Generate comprehensive business plans', category:'business', fields:[{id:'businessName',label:'Business Name',type:'text',placeholder:'e.g. TechFlow Solutions'},{id:'industry',label:'Industry',type:'text',placeholder:'e.g. SaaS, E-commerce, Healthcare'},{id:'targetMarket',label:'Target Market',type:'text',placeholder:'e.g. Small businesses in the Middle East'},{id:'investment',label:'Initial Investment',type:'text',placeholder:'e.g. $50,000'}] },
-    'cv-resume':            { icon:'📄', title:'CV & Resume Writer',    desc:'Create professional CVs', category:'business', fields:[{id:'jobTitle',label:'Target Job Title',type:'text',placeholder:'e.g. Senior Software Engineer'},{id:'experience',label:'Work Experience',type:'textarea',placeholder:'List your work experience...',rows:4},{id:'skills',label:'Key Skills',type:'text',placeholder:'e.g. Python, React, Project Management'},{id:'education',label:'Education',type:'text',placeholder:'e.g. BSc Computer Science, MIT 2020'},{id:'achievements',label:'Key Achievements',type:'textarea',placeholder:'Your notable achievements...',rows:3}] },
-    'lesson-simplifier':    { icon:'🎓', title:'Lesson Simplifier',     desc:'Simplify complex topics', category:'study',    fields:[{id:'topic',label:'Topic to Explain',type:'text',placeholder:'e.g. Quantum entanglement, Calculus derivatives'},{id:'level',label:'Student Level',type:'select',options:['Elementary','Middle School','High School','University','Adult Learner']}] },
-    'qa-generator':         { icon:'❓', title:'Q&A Generator',         desc:'Generate practice questions', category:'study',    fields:[{id:'topic',label:'Topic / Subject',type:'text',placeholder:'e.g. World War II, Photosynthesis'},{id:'count',label:'Number of Questions',type:'select',options:['5','10','15','20']},{id:'difficulty',label:'Difficulty',type:'select',options:['Easy','Medium','Hard','Mixed']}] },
-    'study-plan':           { icon:'📅', title:'Study Plan Creator',    desc:'Create personalized study plans', category:'study',    fields:[{id:'subject',label:'Subject',type:'text',placeholder:'e.g. Mathematics, IELTS, Programming'},{id:'examDate',label:'Exam / Goal Date',type:'text',placeholder:'e.g. 3 months from now, June 15'},{id:'currentLevel',label:'Current Level',type:'select',options:['Beginner','Intermediate','Advanced']},{id:'hoursPerDay',label:'Hours Available Per Day',type:'select',options:['1','2','3','4','5+']}] },
-    'text-to-speech':       { icon:'🔊', title:'Text to Speech',        desc:'Convert text to natural audio', category:'audio',   fields:[{id:'text',label:'Text to Convert',type:'textarea',placeholder:'Enter the text you want to convert to speech...',rows:6},{id:'language',label:'Language',type:'select',options:['English','Arabic']},{id:'stability',label:'Voice Stability',type:'select',options:['0.3','0.5','0.7','0.9']}] },
-    'text-to-image':        { icon:'🖼️', title:'Text to Image',         desc:'Generate images from descriptions', category:'image',   fields:[{id:'prompt',label:'Image Description',type:'textarea',placeholder:'Describe the image you want to generate...',rows:4},{id:'style',label:'Style',type:'select',options:['photographic','digital-art','anime','cinematic','fantasy-art','neon-punk','3d-model']},{id:'negativePrompt',label:'Negative Prompt (optional)',type:'text',placeholder:'What to avoid in the image'}] },
-    'excel-csv-analyzer':   { icon:'📈', title:'Data Analyzer',         desc:'Analyze data and get insights', category:'data',    fields:[{id:'data',label:'Paste Your Data (CSV or table)',type:'textarea',placeholder:'Paste your CSV data or table here...',rows:8},{id:'question',label:'What do you want to know?',type:'text',placeholder:'e.g. What are the top trends? Which product sells most?'}] },
+async function pollJobStatus(jobId) {
+  var maxAttempts = 60, attempts = 0;
+  var poll = async function() {
+    attempts++;
+    try {
+      var res  = await fetch(API_BASE + '/tools/status/' + jobId, {headers:{'Authorization':'Bearer ' + authToken}});
+      var data = await res.json();
+      if (data.status === 'completed' && data.result) {
+        showResult(data.result.output, data.result.outputType, 0, data.result.projectId);
+        loadUsage(); setRunLoading(false);
+      } else if (data.status === 'failed') {
+        showResult(data.error || 'Processing failed.', 'error', 0, null); setRunLoading(false);
+      } else if (attempts < maxAttempts) { setTimeout(poll, 2000); }
+      else { showResult('Processing timed out. Please try again.', 'error', 0, null); setRunLoading(false); }
+    } catch(err) {
+      if (attempts < maxAttempts) setTimeout(poll, 3000);
+      else { showResult('Connection error during processing.', 'error', 0, null); setRunLoading(false); }
+    }
   };
+  setTimeout(poll, 1500);
+}
 
-  // ── Init ───────────────────────────────
-  (function init() {
-    if (!authToken) {
-      window.location.href = `auth.html?redirect=${encodeURIComponent(window.location.href)}`;
-      return;
-    }
+function showLoading() {
+  document.getElementById('loadingCard').classList.add('visible');
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('resultCard').style.display = 'none';
+}
 
-    const params = new URLSearchParams(window.location.search);
-    const toolId = params.get('tool');
+function showResult(output, outputType, tokensUsed, projectId, isTruncated) {
+  currentOutput    = output;
+  currentProjectId = projectId;
 
-    if (!toolId || !TOOLS[toolId]) {
-      window.location.href = 'tools.html';
-      return;
-    }
+  document.getElementById('loadingCard').classList.remove('visible');
+  var card = document.getElementById('resultCard');
+  card.style.display = 'block';
+  card.classList.add('visible');
 
-    currentTool     = toolId;
-    const tool      = TOOLS[toolId];
-    currentCategory = tool.category;
+  var textEl      = document.getElementById('outputText');
+  var blurOverlay = document.getElementById('freeBlurOverlay');
+  var upgradeBanner = document.getElementById('freeUpgradeBanner');
 
-    // Update header
-    document.title = `${tool.title} — Sakura AI`;
-    document.getElementById('toolHeaderIcon').textContent  = tool.icon;
-    document.getElementById('toolHeaderTitle').textContent = tool.title;
-    document.getElementById('toolHeaderDesc').textContent  = tool.desc;
+  // Hide blur overlay by default
+  if (blurOverlay) blurOverlay.style.display = 'none';
+  if (upgradeBanner) upgradeBanner.classList.remove('visible');
 
-    // Build input fields
-    buildInputFields(tool.fields);
+  // Clean truncation marker from display text
+  var displayOutput = output ? output.replace('\n\n[SAKURA_FREE_TRUNCATED]', '') : output;
 
-    // Load usage
-    loadUsage();
+  if (outputType === 'error') {
+    textEl.innerHTML = '<div style="color:#DC2626;padding:16px;background:#FEE2E2;border-radius:8px;font-size:14px;line-height:1.7;">⚠️ ' + displayOutput + '</div>';
+    textEl.classList.remove('code-output');
+  } else if (outputType === 'image') {
+    textEl.innerHTML = '<img src="' + displayOutput + '" class="result-image" alt="Generated image" />';
+    textEl.classList.remove('code-output');
+  } else if (outputType === 'audio') {
+    textEl.innerHTML = '<p style="margin-bottom:12px;color:var(--gray);font-size:13px;">Your audio is ready:</p><audio controls class="result-audio"><source src="' + displayOutput + '" type="audio/mpeg"></audio>';
+    textEl.classList.remove('code-output');
+  } else if (outputType === 'code') {
+    textEl.textContent = displayOutput;
+    textEl.classList.add('code-output');
+  } else {
+    textEl.textContent = displayOutput;
+    textEl.classList.remove('code-output');
+  }
 
-    // Set user name in nav
-    const user = JSON.parse(localStorage.getItem('sakura_user') || '{}');
-    if (user.firstName) document.getElementById('navUserName').textContent = user.firstName;
-  })();
+  // Show blur overlay if output was truncated (free user)
+  if (isTruncated && blurOverlay) {
+    blurOverlay.style.display = 'flex';
+    document.getElementById('outputWrap').classList.add('free-blur-wrap');
+  }
 
-  function buildInputFields(fields) {
-    const container = document.getElementById('toolInputFields');
-    let html = '';
+  // Show upgrade banner for free users after any result
+  if (isFreeUser && outputType !== 'error' && upgradeBanner) {
+    upgradeBanner.classList.add('visible');
+  }
 
-    fields.forEach(f => {
-      html += `<div class="tool-field">`;
-      html += `<label for="field_${f.id}">${f.label}</label>`;
+  var meta = document.getElementById('outputMeta');
+  meta.innerHTML = '';
+  if (tokensUsed > 0) meta.innerHTML += '<span class="result-meta-item"><i class="fas fa-coins"></i> ' + tokensUsed.toLocaleString() + ' tokens used</span>';
+  if (projectId)      meta.innerHTML += '<span class="result-meta-item"><i class="fas fa-save"></i> Auto-saved to projects</span>';
+  if (isFreeUser)     meta.innerHTML += '<span class="result-meta-item" style="color:var(--primary-deep);"><i class="fas fa-star"></i> Free plan result</span>';
+  meta.innerHTML += '<span class="result-meta-item"><i class="fas fa-clock"></i> ' + new Date().toLocaleTimeString() + '</span>';
+}
 
-      if (f.type === 'select') {
-        html += `<select id="field_${f.id}">`;
-        f.options.forEach(o => { html += `<option value="${o}">${o}</option>`; });
-        html += `</select>`;
-      } else if (f.type === 'textarea') {
-        html += `<textarea id="field_${f.id}" placeholder="${f.placeholder || ''}" rows="${f.rows || 4}"></textarea>`;
-      } else {
-        html += `<input type="text" id="field_${f.id}" placeholder="${f.placeholder || ''}" />`;
-      }
-      html += `</div>`;
+function setRunLoading(loading) {
+  var btn    = document.getElementById('runBtn');
+  var text   = document.getElementById('runBtnText');
+  var loader = document.getElementById('runBtnLoader');
+  if (!btn) return;
+  btn.disabled         = loading;
+  text.style.display   = loading ? 'none' : 'flex';
+  loader.style.display = loading ? 'flex' : 'none';
+}
+
+function copyOutput() {
+  if (!currentOutput) return;
+  navigator.clipboard.writeText(currentOutput).then(function() { showToast('Copied to clipboard!'); });
+}
+
+async function saveProject() {
+  if (!currentOutput || !currentProjectId) { showToast('No output to save'); return; }
+  showToast('Already saved to your projects!');
+}
+
+async function regenerate() {
+  if (!currentProjectId) { runTool(); return; }
+  setRunLoading(true); showLoading();
+  try {
+    var res  = await fetch(API_BASE + '/tools/regenerate', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + authToken},
+      body: JSON.stringify({projectId: currentProjectId})
     });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    if (data.jobId) pollJobStatus(data.jobId);
+    else showResult(data.output, data.outputType, 0, data.projectId);
+  } catch(err) {
+    showResult(err.message || 'Regeneration failed.', 'error', 0, null);
+  } finally { setRunLoading(false); }
+}
 
-    html += `<button class="btn-run" id="runBtn" onclick="runTool()">
-      <span id="runBtnText"><i class="fas fa-magic"></i> Generate</span>
-      <span id="runBtnLoader" style="display:none;"><i class="fas fa-spinner fa-spin"></i> Generating...</span>
-    </button>`;
+function openImproveModal() {
+  if (!currentOutput) { showToast('Generate output first'); return; }
+  document.getElementById('improveModal').classList.add('open');
+}
 
-    container.innerHTML = html;
-  }
-
-  // ── Run Tool ───────────────────────────
-  async function runTool() {
-    const tool   = TOOLS[currentTool];
-    const params = {};
-
-    // Collect field values
-    tool.fields.forEach(f => {
-      const el = document.getElementById(`field_${f.id}`);
-      if (el) params[f.id] = el.value.trim();
+async function submitImprove() {
+  var instruction = document.getElementById('improveInstruction').value.trim();
+  if (!instruction) { showToast('Please enter improvement instructions'); return; }
+  document.getElementById('improveModal').classList.remove('open');
+  setRunLoading(true); showLoading();
+  try {
+    var res  = await fetch(API_BASE + '/tools/improve', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + authToken},
+      body: JSON.stringify({projectId: currentProjectId, instruction: instruction})
     });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    showResult(data.output, 'text', data.tokensUsed, currentProjectId);
+  } catch(err) {
+    showResult(err.message || 'Improvement failed.', 'error', 0, null);
+  } finally { setRunLoading(false); }
+}
 
-    // Validate required fields
-    const firstField = tool.fields[0];
-    if (!params[firstField.id]) {
-      showToast(`⚠️ Please fill in the ${firstField.label} field`);
-      return;
-    }
+async function loadUsage() {
+  if (IS_DEMO) {
+    document.getElementById('usageText').textContent = 'Backend required';
+    document.getElementById('usageBarFill').style.width = '0%';
+    return;
+  }
+  try {
+    var res  = await fetch(API_BASE + '/tools/usage', {headers:{'Authorization':'Bearer ' + authToken}});
+    var data = await res.json();
+    if (!res.ok) return;
+    document.getElementById('usageText').textContent = data.tokens.used.toLocaleString() + ' / ' + data.tokens.limit.toLocaleString() + ' tokens';
+    document.getElementById('usageBarFill').style.width = data.tokens.percentage + '%';
+    if (data.tokens.percentage > 90) document.getElementById('usageBarFill').style.background = '#EF4444';
 
-    setRunLoading(true);
-    showOutputLoading();
-
-    // ── Demo Mode: simulate AI response ──
-    if (IS_DEMO) {
-      setTimeout(() => {
-        const demoOutput = getDemoOutput(currentTool, params);
-        displayOutput(demoOutput, 'text', 0, null);
-        setRunLoading(false);
-      }, 1500); // simulate 1.5s processing time
-      return;
-    }
-
-    // ── Live Mode: call API ──
-    try {
-      const res  = await fetch(`${API_BASE}/tools/run`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
-        body:    JSON.stringify({ toolName: currentTool, params }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 401) { window.location.href = 'auth.html'; return; }
-        if (res.status === 403 && data.code === 'SUBSCRIPTION_REQUIRED') {
-          showOutputError('Active subscription required. <a href="pricing.html" style="color:var(--primary-deep)">Upgrade your plan →</a>');
-          return;
-        }
-        if (res.status === 402) {
-          showOutputError('Insufficient credits. <a href="pricing.html" style="color:var(--primary-deep)">Get more credits →</a>');
-          return;
-        }
-        throw new Error(data.error || 'Tool execution failed');
+    // Update free user state
+    if (data.isFreeUser) {
+      isFreeUser = true;
+      document.getElementById('freeToolNotice').classList.add('visible');
+      lockProButtons();
+      if (data.freeDaily && data.freeDaily.remaining !== null) {
+        updateFreeDailyBar(data.freeDaily.remaining);
       }
-
-      if (data.jobId) {
-        pollJobStatus(data.jobId);
-      } else {
-        displayOutput(data.output, data.outputType, data.tokensUsed, data.projectId);
-        loadUsage();
-      }
-
-    } catch (err) {
-      showOutputError(err.message || 'Something went wrong. Please try again.');
-    } finally {
-      setRunLoading(false);
     }
-  }
+  } catch(e) {}
+}
 
-  // ── Poll job status (heavy tools) ──────
-  async function pollJobStatus(jobId) {
-    const maxAttempts = 60;
-    let attempts = 0;
-
-    const poll = async () => {
-      attempts++;
-      try {
-        const res  = await fetch(`${API_BASE}/tools/status/${jobId}`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        const data = await res.json();
-
-        if (data.status === 'completed' && data.result) {
-          displayOutput(data.result.output, data.result.outputType, 0, data.result.projectId);
-          loadUsage();
-          setRunLoading(false);
-        } else if (data.status === 'failed') {
-          showOutputError(data.error || 'Processing failed. Please try again.');
-          setRunLoading(false);
-        } else if (attempts < maxAttempts) {
-          setTimeout(poll, 2000);
-        } else {
-          showOutputError('Processing timed out. Please try again.');
-          setRunLoading(false);
-        }
-      } catch (err) {
-        if (attempts < maxAttempts) setTimeout(poll, 3000);
-        else { showOutputError('Connection error during processing.'); setRunLoading(false); }
-      }
-    };
-    setTimeout(poll, 1500);
-  }
-
-  // ── Display output ─────────────────────
-  function displayOutput(output, outputType, tokensUsed, projectId) {
-    currentOutput    = output;
-    currentProjectId = projectId;
-
-    document.getElementById('outputEmpty').style.display   = 'none';
-    document.getElementById('outputLoading').style.display = 'none';
-    document.getElementById('outputContent').style.display = 'flex';
-    document.getElementById('outputActions').style.display = 'flex';
-
-    const textEl = document.getElementById('outputText');
-
-    if (outputType === 'image') {
-      textEl.innerHTML = `<img src="${output}" class="output-image" alt="Generated image" />`;
-      textEl.classList.remove('code-output');
-    } else if (outputType === 'audio') {
-      textEl.innerHTML = `<p style="margin-bottom:12px;color:var(--gray);font-size:13px;">Your audio is ready:</p><audio controls class="output-audio"><source src="${output}" type="audio/mpeg">Your browser does not support audio.</audio>`;
-      textEl.classList.remove('code-output');
-    } else if (outputType === 'code') {
-      textEl.textContent = output;
-      textEl.classList.add('code-output');
-    } else {
-      textEl.textContent = output;
-      textEl.classList.remove('code-output');
-    }
-
-    // Meta info
-    const meta = document.getElementById('outputMeta');
-    meta.innerHTML = '';
-    if (tokensUsed > 0) meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-coins"></i> ${tokensUsed.toLocaleString()} tokens used</span>`;
-    if (projectId)      meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-save"></i> Auto-saved to projects</span>`;
-    meta.innerHTML += `<span class="output-meta-item"><i class="fas fa-clock"></i> ${new Date().toLocaleTimeString()}</span>`;
-  }
-
-  // ── Output state helpers ───────────────
-  function showOutputLoading() {
-    document.getElementById('outputEmpty').style.display   = 'none';
-    document.getElementById('outputLoading').style.display = 'flex';
-    document.getElementById('outputContent').style.display = 'none';
-    document.getElementById('outputActions').style.display = 'none';
-  }
-
-  function showOutputError(msg) {
-    document.getElementById('outputEmpty').style.display   = 'none';
-    document.getElementById('outputLoading').style.display = 'none';
-    document.getElementById('outputContent').style.display = 'flex';
-    document.getElementById('outputActions').style.display = 'none';
-    document.getElementById('outputText').innerHTML = `<div style="color:#DC2626;padding:16px;background:#FEE2E2;border-radius:8px;font-size:14px;line-height:1.7;">⚠️ ${msg}</div>`;
-    document.getElementById('outputText').classList.remove('code-output');
-  }
-
-  function setRunLoading(loading) {
-    const btn    = document.getElementById('runBtn');
-    const text   = document.getElementById('runBtnText');
-    const loader = document.getElementById('runBtnLoader');
-    btn.disabled         = loading;
-    text.style.display   = loading ? 'none'   : 'flex';
-    loader.style.display = loading ? 'flex'   : 'none';
-  }
-
-  // ── Copy output ────────────────────────
-  function copyOutput() {
-    if (!currentOutput) return;
-    navigator.clipboard.writeText(currentOutput).then(() => showToast('✅ Copied to clipboard!'));
-  }
-
-  // ── Save project ───────────────────────
-  async function saveProject() {
-    if (!currentOutput || !currentProjectId) { showToast('⚠️ No output to save'); return; }
-    showToast('✅ Already saved to your projects!');
-  }
-
-  // ── Regenerate ─────────────────────────
-  async function regenerate() {
-    if (!currentProjectId) { runTool(); return; }
-    setRunLoading(true);
-    showOutputLoading();
-    try {
-      const res  = await fetch(`${API_BASE}/tools/regenerate`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
-        body:    JSON.stringify({ projectId: currentProjectId }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      if (data.jobId) pollJobStatus(data.jobId);
-      else displayOutput(data.output, data.outputType, 0, data.projectId);
-    } catch (err) {
-      showOutputError(err.message || 'Regeneration failed.');
-    } finally {
-      setRunLoading(false);
-    }
-  }
-
-  // ── Improve ────────────────────────────
-  function openImproveModal() {
-    if (!currentOutput) { showToast('⚠️ Generate output first'); return; }
-    document.getElementById('improveModal').classList.add('open');
-  }
-
-  async function submitImprove() {
-    const instruction = document.getElementById('improveInstruction').value.trim();
-    if (!instruction) { showToast('⚠️ Please enter improvement instructions'); return; }
-
-    document.getElementById('improveModal').classList.remove('open');
-    setRunLoading(true);
-    showOutputLoading();
-
-    try {
-      const res  = await fetch(`${API_BASE}/tools/improve`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
-        body:    JSON.stringify({ projectId: currentProjectId, instruction }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      displayOutput(data.output, 'text', data.tokensUsed, currentProjectId);
-    } catch (err) {
-      showOutputError(err.message || 'Improvement failed.');
-    } finally {
-      setRunLoading(false);
-    }
-  }
-
-  // ── Load usage ─────────────────────────
-  async function loadUsage() {
-    if (IS_DEMO) {
-      document.getElementById('usageText').textContent = '0 / 50,000 tokens';
-      document.getElementById('usageBarFill').style.width = '0%';
-      return;
-    }
-    try {
-      const res  = await fetch(`${API_BASE}/tools/usage`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      const data = await res.json();
-      if (!res.ok) return;
-
-      document.getElementById('usageText').textContent =
-        `${data.tokens.used.toLocaleString()} / ${data.tokens.limit.toLocaleString()} tokens`;
-      document.getElementById('usageBarFill').style.width = `${data.tokens.percentage}%`;
-
-      if (data.tokens.percentage > 90) {
-        document.getElementById('usageBarFill').style.background = '#EF4444';
-      }
-    } catch (_) {}
-  }
-
-  // Close improve modal on overlay click
-  document.getElementById('improveModal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
-  });
+document.getElementById('improveModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

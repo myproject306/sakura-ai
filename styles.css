@@ -360,6 +360,9 @@ button { font-family: inherit; cursor: pointer; }
 /* Hero Visual */
 .hero-visual {
   position: relative;
+  align-self: flex-end;
+  padding-top: 40px;
+  padding-bottom: 60px;
 }
 
 .hero-card-main {

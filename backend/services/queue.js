@@ -55,11 +55,11 @@ if (process.env.REDIS_URL) {
 // ══════════════════════════════════════════
 
 async function processToolJob(jobData) {
-  const { userId, toolName, category, params, projectTitle } = jobData;
+  const { userId, toolName, category, params, projectTitle, isFreeUser = false } = jobData;
 
   try {
-    // Run the tool
-    const result = await routeTool(toolName, category, params);
+    // Run the tool — pass isFreeUser for reduced tokens/no Bing
+    const result = await routeTool(toolName, category, params, isFreeUser);
 
     // Track usage
     await prisma.usage.create({
@@ -84,27 +84,32 @@ async function processToolJob(jobData) {
       await addTokensUsed(userId, result.tokensUsed);
     }
 
-    // Auto-save to projects
-    const project = await prisma.project.create({
-      data: {
-        userId,
-        title:      projectTitle || `${toolName} — ${new Date().toLocaleDateString()}`,
-        toolName,
-        category,
-        input:      JSON.stringify(params),
-        output:     result.output,
-        outputType: result.outputType || 'text',
-      },
-    });
+    // Auto-save to projects — FREE users don't get project saving
+    let projectId = null;
+    if (!isFreeUser) {
+      const project = await prisma.project.create({
+        data: {
+          userId,
+          title:      projectTitle || `${toolName} — ${new Date().toLocaleDateString()}`,
+          toolName,
+          category,
+          input:      JSON.stringify(params),
+          output:     result.output,
+          outputType: result.outputType || 'text',
+        },
+      });
+      projectId = project.id;
+    }
 
     return {
-      success:   true,
-      output:    result.output,
+      success:    true,
+      output:     result.output,
       outputType: result.outputType,
       tokensUsed: result.tokensUsed,
       creditsUsed: result.creditsUsed,
-      projectId:  project.id,
+      projectId,
       durationMs: result.durationMs,
+      isFreeUser,
     };
 
   } catch (err) {

@@ -9,18 +9,21 @@ const cache = new NodeCache({ stdTTL: 900 }); // 15 min default
 
 // ── Plan-based token limits ──────────────
 const PLAN_TOKEN_LIMITS = {
-  free:     50_000,
+  free:     5_000,    // Very limited — encourages upgrade
   starter:  parseInt(process.env.STARTER_MONTHLY_TOKENS) || 500_000,
   pro:      parseInt(process.env.PRO_MONTHLY_TOKENS)     || 2_000_000,
   team:     parseInt(process.env.TEAM_MONTHLY_TOKENS)    || 10_000_000,
 };
 
 const PLAN_CREDIT_LIMITS = {
-  free:     10,
+  free:     3,        // Only 3 credits/month for free
   starter:  parseInt(process.env.STARTER_MONTHLY_CREDITS) || 50,
   pro:      parseInt(process.env.PRO_MONTHLY_CREDITS)      || 200,
   team:     parseInt(process.env.TEAM_MONTHLY_CREDITS)     || 1000,
 };
+
+// ── Free tier daily request limit ────────
+const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT) || 5;
 
 // ── General API rate limiter ─────────────
 const generalLimiter = rateLimit({
@@ -56,6 +59,39 @@ const heavyToolLimiter = rateLimit({
   keyGenerator: (req) => req.user?.id || req.ip,
 });
 
+// ── Free tier daily usage cache (in-memory) ──
+// Key: userId, Value: { count, date }
+const freeDailyCache = new NodeCache({ stdTTL: 86400 }); // 24h TTL
+
+// ── Check & increment free daily limit ───
+async function checkFreeDailyLimit(req, res, next) {
+  if (!req.isFreeUser) return next(); // Only applies to free users
+
+  const userId = req.user.id;
+  const today  = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const cacheKey = `free_daily_${userId}_${today}`;
+
+  const current = freeDailyCache.get(cacheKey) || 0;
+
+  if (current >= FREE_DAILY_LIMIT) {
+    return res.status(429).json({
+      error: `Free plan limit reached. You've used all ${FREE_DAILY_LIMIT} daily requests.`,
+      code:  'FREE_DAILY_LIMIT_EXCEEDED',
+      limit: FREE_DAILY_LIMIT,
+      used:  current,
+      resetDate: getTomorrowStart(),
+      upgradeUrl: '/pricing.html',
+      isFreeLimit: true,
+    });
+  }
+
+  // Increment counter
+  freeDailyCache.set(cacheKey, current + 1);
+  req.freeDailyUsed      = current + 1;
+  req.freeDailyRemaining = FREE_DAILY_LIMIT - (current + 1);
+  next();
+}
+
 // ── Fair-use token check middleware ──────
 async function checkTokenLimit(req, res, next) {
   if (!req.user) return next();
@@ -75,12 +111,15 @@ async function checkTokenLimit(req, res, next) {
 
     if (user.monthlyTokensUsed >= limit) {
       return res.status(429).json({
-        error: 'Monthly token limit reached',
+        error: req.isFreeUser
+          ? `Free plan monthly limit reached (${limit.toLocaleString()} tokens). Upgrade for 100x more.`
+          : 'Monthly token limit reached',
         code: 'TOKEN_LIMIT_EXCEEDED',
         limit,
         used: user.monthlyTokensUsed,
         resetDate: getNextMonthStart(),
         upgradeUrl: '/pricing.html',
+        isFreeLimit: req.isFreeUser || false,
       });
     }
 
@@ -162,10 +201,17 @@ async function addTokensUsed(userId, tokens) {
   }
 }
 
-// ── Helper ───────────────────────────────
+// ── Helpers ──────────────────────────────
 function getNextMonthStart() {
   const d = new Date();
   return new Date(d.getFullYear(), d.getMonth() + 1, 1).toISOString();
+}
+
+function getTomorrowStart() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString();
 }
 
 module.exports = {
@@ -174,9 +220,11 @@ module.exports = {
   toolLimiter,
   heavyToolLimiter,
   checkTokenLimit,
+  checkFreeDailyLimit,
   checkCredits,
   deductCredits,
   addTokensUsed,
   PLAN_TOKEN_LIMITS,
   PLAN_CREDIT_LIMITS,
+  FREE_DAILY_LIMIT,
 };

@@ -8,6 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -168,6 +175,15 @@
   </div>
 </footer>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
 <script src="script.js"></script>
 <script>
   (function checkAuth() {
@@ -182,5 +198,6 @@
     }
   })();
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

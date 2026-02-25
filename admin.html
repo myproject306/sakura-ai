@@ -104,6 +104,13 @@
       .metrics-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -259,11 +266,19 @@
   </main>
 </div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3001/api'
-    : '/api';
+  const API_BASE = SAKURA_CONFIG.API_BASE;
 
   const token = localStorage.getItem('sakura_token');
   let usersPage = 1;
@@ -552,5 +567,6 @@
     }
   }
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

@@ -66,6 +66,13 @@
     .spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary-deep); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -125,11 +132,19 @@
   </div>
 </div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3001/api'
-    : '/api';
+  const API_BASE = SAKURA_CONFIG.API_BASE;
 
   const PLAN_CREDITS = { starter: 50, pro: 200, team: 1000 };
   const PLAN_ICONS   = { starter: '🌱', pro: '🌸', team: '🏢' };
@@ -228,5 +243,6 @@
 
   verifyCheckout();
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

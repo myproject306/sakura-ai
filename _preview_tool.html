@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Preview Tool</title></head>
+<body>
+<script>
+  localStorage.setItem('sakura_token', 'preview-token-123');
+  localStorage.setItem('sakura_user', JSON.stringify({firstName:'Test', email:'test@test.com'}));
+  window.location.href = 'tool-interface.html?tool=article-writer';
+</script>
+</body>
+</html>

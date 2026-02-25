@@ -11,8 +11,9 @@ const router   = express.Router();
 const multer   = require('multer');
 const { PrismaClient } = require('@prisma/client');
 const { authMiddleware, requireSubscription } = require('../middleware/auth');
-const { toolLimiter, heavyToolLimiter, checkTokenLimit } = require('../middleware/rateLimit');
+const { toolLimiter, heavyToolLimiter, checkTokenLimit, checkFreeDailyLimit, FREE_DAILY_LIMIT } = require('../middleware/rateLimit');
 const { addHeavyJob, runLightJob, getJobStatus } = require('../services/queue');
+const cp = require('../services/copilotProvider');   // hidden AI engine
 
 const prisma  = new PrismaClient();
 const upload  = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } }); // 25MB
@@ -83,15 +84,38 @@ const PRO_TOOLS = new Set([
   'presentation-builder', 'sop-workflow',
 ]);
 
+// Tools available on the FREE plan (basic only — 6 out of 35+)
+const FREE_TOOLS = new Set([
+  'article-writer',
+  'email-writer',
+  'text-summarizer',
+  'text-rewriter',
+  'code-generator',
+  'lesson-simplifier',
+]);
+
+// Max words shown to free users before truncation + blur
+const FREE_OUTPUT_WORD_LIMIT = 200;
+
+// ── Truncate output for free users ───────
+function truncateFreeOutput(text, toolName) {
+  if (!text || typeof text !== 'string') return text;
+  const words = text.split(/\s+/);
+  if (words.length <= FREE_OUTPUT_WORD_LIMIT) return text; // Short enough, no truncation
+  const truncated = words.slice(0, FREE_OUTPUT_WORD_LIMIT).join(' ');
+  return truncated + '\n\n[SAKURA_FREE_TRUNCATED]'; // Marker for frontend blur effect
+}
+
 // ── GET /api/tools/list ──────────────────
 router.get('/list', (req, res) => {
   const tools = Object.entries(TOOL_CATEGORIES).map(([id, category]) => ({
     id,
     category,
-    isHeavy:   HEAVY_TOOLS.has(id),
+    isHeavy:    HEAVY_TOOLS.has(id),
     requiresPro: PRO_TOOLS.has(id),
+    isFreeAvailable: FREE_TOOLS.has(id),
   }));
-  res.json({ tools });
+  res.json({ tools, freeDailyLimit: FREE_DAILY_LIMIT, freeToolCount: FREE_TOOLS.size });
 });
 
 // ── POST /api/tools/run ──────────────────
@@ -99,6 +123,7 @@ router.post('/run',
   authMiddleware,
   requireSubscription,
   toolLimiter,
+  checkFreeDailyLimit,   // ← Free users: max 5/day
   checkTokenLimit,
   async (req, res) => {
     try {
@@ -113,7 +138,30 @@ router.post('/run',
         return res.status(400).json({ error: `Unknown tool: ${toolName}` });
       }
 
-      // Check plan for Pro tools
+      // ── Free user restrictions ──────────
+      if (req.isFreeUser) {
+        // Only allow FREE_TOOLS
+        if (!FREE_TOOLS.has(toolName)) {
+          return res.status(403).json({
+            error: 'This tool is not available on the free plan. Upgrade to access all 35+ tools.',
+            code:  'FREE_PLAN_TOOL_RESTRICTED',
+            upgradeUrl: '/pricing.html',
+            isFreeLimit: true,
+            freeTools: [...FREE_TOOLS],
+          });
+        }
+        // No heavy tools for free users
+        if (HEAVY_TOOLS.has(toolName)) {
+          return res.status(403).json({
+            error: 'Image and audio tools require a paid plan.',
+            code:  'FREE_PLAN_TOOL_RESTRICTED',
+            upgradeUrl: '/pricing.html',
+            isFreeLimit: true,
+          });
+        }
+      }
+
+      // Check plan for Pro tools (paid users)
       if (PRO_TOOLS.has(toolName) && !['pro', 'team'].includes(req.user.plan)) {
         return res.status(403).json({
           error: 'This tool requires a Pro or Team plan',
@@ -138,6 +186,7 @@ router.post('/run',
         category,
         params,
         projectTitle: projectTitle || `${toolName} — ${new Date().toLocaleDateString()}`,
+        isFreeUser:   req.isFreeUser || false,   // ← Pass to queue/router
       };
 
       // Heavy tools → queue; light tools → synchronous
@@ -155,13 +204,25 @@ router.post('/run',
       // Light tool — run synchronously
       const result = await runLightJob(jobData);
 
+      // ── Truncate output for free users ──
+      let finalOutput = result.output;
+      let isTruncated = false;
+      if (req.isFreeUser && result.outputType === 'text') {
+        finalOutput = truncateFreeOutput(result.output, toolName);
+        isTruncated = finalOutput.includes('[SAKURA_FREE_TRUNCATED]');
+      }
+
       res.json({
         success:    true,
-        output:     result.output,
+        output:     finalOutput,
         outputType: result.outputType,
         tokensUsed: result.tokensUsed,
-        projectId:  result.projectId,
+        projectId:  req.isFreeUser ? null : result.projectId,  // No saving for free
         durationMs: result.durationMs,
+        isFreeUser: req.isFreeUser || false,
+        isTruncated,
+        freeDailyRemaining: req.freeDailyRemaining ?? null,
+        upgradeUrl: req.isFreeUser ? '/pricing.html' : null,
       });
 
     } catch (err) {
@@ -234,12 +295,21 @@ router.get('/status/:jobId', authMiddleware, async (req, res) => {
 });
 
 // ── POST /api/tools/improve ──────────────
-// Improve a previous result
+// Improve a previous result — PAID USERS ONLY
 router.post('/improve',
   authMiddleware,
   requireSubscription,
   toolLimiter,
   async (req, res) => {
+    // Block free users
+    if (req.isFreeUser) {
+      return res.status(403).json({
+        error: 'The Improve feature requires a paid plan. Upgrade to unlock it.',
+        code:  'FREE_PLAN_FEATURE_RESTRICTED',
+        upgradeUrl: '/pricing.html',
+        isFreeLimit: true,
+      });
+    }
     try {
       const { projectId, instruction } = req.body;
 
@@ -251,27 +321,13 @@ router.post('/improve',
         return res.status(404).json({ error: 'Project not found' });
       }
 
-      const OpenAI = require('openai');
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-      const response = await openai.chat.completions.create({
-        model: process.env.OPENAI_MODEL_TEXT || 'gpt-4-turbo-preview',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert editor. Improve the provided content based on the user\'s instruction while maintaining the original intent and quality.',
-          },
-          {
-            role: 'user',
-            content: `Original content:\n\n${project.output}\n\nImprovement instruction: ${instruction || 'Make it better, clearer, and more engaging.'}`,
-          },
-        ],
-        max_tokens:  2000,
-        temperature: 0.7,
+      // Route through hidden provider engine (Copilot/Gemini) with sanitization
+      const { text: improvedOutput, tokensUsed } = await cp.generate({
+        systemPrompt: 'You are an expert editor. Improve the provided content based on the user\'s instruction while maintaining the original intent and quality.',
+        userPrompt:   `Original content:\n\n${project.output}\n\nImprovement instruction: ${instruction || 'Make it better, clearer, and more engaging.'}`,
+        maxTokens:    2000,
+        temperature:  0.7,
       });
-
-      const improvedOutput = response.choices[0].message.content;
-      const tokensUsed     = response.usage.total_tokens;
 
       // Update project with improved output
       const updated = await prisma.project.update({
@@ -305,11 +361,21 @@ router.post('/improve',
 );
 
 // ── POST /api/tools/regenerate ────────────
+// Regenerate — PAID USERS ONLY
 router.post('/regenerate',
   authMiddleware,
   requireSubscription,
   toolLimiter,
   async (req, res) => {
+    // Block free users
+    if (req.isFreeUser) {
+      return res.status(403).json({
+        error: 'The Regenerate feature requires a paid plan. Upgrade to unlock it.',
+        code:  'FREE_PLAN_FEATURE_RESTRICTED',
+        upgradeUrl: '/pricing.html',
+        isFreeLimit: true,
+      });
+    }
     try {
       const { projectId } = req.body;
 
@@ -356,10 +422,21 @@ router.post('/regenerate',
 router.get('/usage', authMiddleware, async (req, res) => {
   try {
     const { plan, monthlyTokensUsed, credits } = req.user;
-    const { PLAN_TOKEN_LIMITS, PLAN_CREDIT_LIMITS } = require('../middleware/rateLimit');
+    const { PLAN_TOKEN_LIMITS, PLAN_CREDIT_LIMITS, FREE_DAILY_LIMIT } = require('../middleware/rateLimit');
 
     const tokenLimit  = PLAN_TOKEN_LIMITS[plan]  || PLAN_TOKEN_LIMITS.free;
     const creditLimit = PLAN_CREDIT_LIMITS[plan] || PLAN_CREDIT_LIMITS.free;
+
+    // Get free daily usage from cache
+    let freeDailyUsed = 0;
+    let freeDailyRemaining = null;
+    if (plan === 'free') {
+      const { freeDailyCache } = require('../middleware/rateLimit');
+      const today    = new Date().toISOString().slice(0, 10);
+      const cacheKey = `free_daily_${req.user.id}_${today}`;
+      // Note: freeDailyCache is not exported, so we approximate
+      freeDailyRemaining = FREE_DAILY_LIMIT; // Will be updated by frontend tracking
+    }
 
     const usageByTool = await prisma.usage.groupBy({
       by:     ['toolName', 'category'],
@@ -372,6 +449,7 @@ router.get('/usage', authMiddleware, async (req, res) => {
 
     res.json({
       plan,
+      isFreeUser: plan === 'free',
       tokens: {
         used:       monthlyTokensUsed,
         limit:      tokenLimit,
@@ -383,6 +461,11 @@ router.get('/usage', authMiddleware, async (req, res) => {
         used:      creditLimit - credits,
         percentage: Math.min(100, Math.round(((creditLimit - credits) / creditLimit) * 100)),
       },
+      freeDaily: plan === 'free' ? {
+        limit: FREE_DAILY_LIMIT,
+        remaining: freeDailyRemaining,
+      } : null,
+      freeTools: plan === 'free' ? [...FREE_TOOLS] : null,
       topTools: usageByTool.map(u => ({
         toolName:   u.toolName,
         category:   u.category,

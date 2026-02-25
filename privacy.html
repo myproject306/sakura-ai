@@ -9,6 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e8547a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sakura AI" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
 </head>
 <body>
 
@@ -48,7 +55,7 @@
   <span class="legal-date">Last updated: January 15, 2025</span>
 
   <h2>1. Introduction</h2>
-  <p>Welcome to Sakura AI ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at sakura-ai.com.</p>
+  <p>Welcome to Sakura AI ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at sakura.ai.</p>
   <p>Please read this policy carefully. If you disagree with its terms, please discontinue use of our platform.</p>
 
   <h2>2. Information We Collect</h2>
@@ -116,7 +123,7 @@
     <li><strong>Portability:</strong> Request transfer of your data in a machine-readable format.</li>
     <li><strong>Objection:</strong> Object to certain types of data processing.</li>
   </ul>
-  <p>To exercise these rights, please contact us at privacy@sakura-ai.com.</p>
+  <p>To exercise these rights, please contact us at support@sakura.ai.</p>
 
   <h2>10. Children's Privacy</h2>
   <p>Our platform is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected such information, please contact us immediately.</p>
@@ -127,8 +134,8 @@
   <h2>12. Contact Us</h2>
   <p>If you have questions or concerns about this Privacy Policy, please contact us:</p>
   <ul>
-    <li>Email: privacy@sakura-ai.com</li>
-    <li>Contact Form: <a href="contact.html" style="color:var(--primary-deep);">sakura-ai.com/contact</a></li>
+    <li>Email: support@sakura.ai</li>
+    <li>Contact Form: <a href="contact.html" style="color:var(--primary-deep);">sakura.ai/contact</a></li>
   </ul>
 </div>
 
@@ -144,6 +151,15 @@
   </div>
 </footer>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('🌸 SW registered'))
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
 <script src="script.js"></script>
 <script>
   (function checkAuth() {
@@ -158,5 +174,6 @@
     }
   })();
 </script>
+<script src="sakura-assistant.js"></script>
 </body>
 </html>

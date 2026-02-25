@@ -14,10 +14,10 @@ async function main() {
   // ── Admin User ──
   const adminHash = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@Sakura2025!', 12);
   const admin = await prisma.user.upsert({
-    where: { email: process.env.ADMIN_EMAIL || 'admin@sakura-ai.com' },
+    where: { email: process.env.ADMIN_EMAIL || 'admin@sakura.ai' },
     update: {},
     create: {
-      email: process.env.ADMIN_EMAIL || 'admin@sakura-ai.com',
+      email: process.env.ADMIN_EMAIL || 'admin@sakura.ai',
       name: 'Sakura Admin',
       firstName: 'Sakura',
       lastName: 'Admin',

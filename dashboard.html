@@ -84,11 +84,6 @@
         <li><a href="#" onclick="showSection('projects')"><span class="nav-icon">📁</span> My Projects</a></li>
         <li><a href="#" onclick="showSection('favorites')"><span class="nav-icon">⭐</span> Favorites</a></li>
       </ul>
-      <h5>My Site</h5>
-      <ul>
-        <li><a href="#" onclick="showSection('mysite')"><span class="nav-icon">🌐</span> My Site</a></li>
-        <li><a href="#" onclick="showSection('mysite')"><span class="nav-icon">🔗</span> My Subdomain</a></li>
-      </ul>
       <h5>Account</h5>
       <ul>
         <li><a href="#" onclick="openBillingPortal()"><span class="nav-icon">💳</span> Billing</a></li>
@@ -204,42 +199,6 @@
       <button class="dash-tool-btn" onclick="window.location.href='tool-interface.html?tool=business-plan'">
         <span class="emoji">🧠</span><span>Business Plan</span>
       </button>
-    </div>
-
-    <!-- My Site / Subdomain -->
-    <div class="dash-section-title" id="mysiteSection">🌐 My Site</div>
-    <div class="dash-projects" id="mySiteCard" style="margin-bottom:24px;">
-      <div class="dash-projects-header">
-        <h3>Your Site Name</h3>
-        <span style="font-size:12px;color:var(--gray);">Choose your subdomain</span>
-      </div>
-      <div style="padding:20px;">
-        <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">
-          Your personal Sakura AI site will be available at the address below. Choose a unique subdomain name.
-        </p>
-        <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:16px;">
-          <span style="padding:11px 14px;background:var(--accent);font-size:13px;color:var(--gray);border-right:1px solid var(--border);white-space:nowrap;">https://</span>
-          <input
-            type="text"
-            id="subdomainInput"
-            placeholder="yourname"
-            maxlength="32"
-            style="flex:1;padding:11px 12px;border:none;outline:none;font-size:14px;font-family:inherit;background:white;"
-            oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')"
-          />
-          <span style="padding:11px 14px;background:var(--accent);font-size:13px;color:var(--gray);border-left:1px solid var(--border);white-space:nowrap;">.sakura-ai.com</span>
-        </div>
-        <div id="subdomainPreview" style="font-size:12px;color:var(--primary-deep);font-weight:600;margin-bottom:16px;min-height:18px;"></div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <button onclick="saveSubdomain()" class="btn-primary-lg" style="font-size:13px;padding:10px 24px;">
-            <i class="fas fa-save"></i> Save Subdomain
-          </button>
-          <button onclick="copySubdomainLink()" style="background:none;border:1.5px solid var(--border);border-radius:var(--radius-full);padding:10px 18px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;font-family:inherit;">
-            <i class="fas fa-copy"></i> Copy Link
-          </button>
-        </div>
-        <div id="subdomainStatus" style="margin-top:12px;font-size:13px;display:none;"></div>
-      </div>
     </div>
 
     <!-- Recent Projects -->
@@ -487,70 +446,8 @@
     window.location.href = 'tools.html';
   }
 
-  // ── My Site / Subdomain ────────────────
-  (function loadSubdomain() {
-    const saved = localStorage.getItem('sakura_subdomain');
-    if (saved) {
-      document.getElementById('subdomainInput').value = saved;
-      document.getElementById('subdomainPreview').textContent = `🔗 https://${saved}.sakura-ai.com`;
-    }
-  })();
-
-  document.getElementById('subdomainInput').addEventListener('input', function() {
-    const val = this.value.trim();
-    const preview = document.getElementById('subdomainPreview');
-    if (val.length >= 3) {
-      preview.textContent = `🔗 https://${val}.sakura-ai.com`;
-      preview.style.color = 'var(--primary-deep)';
-    } else if (val.length > 0) {
-      preview.textContent = 'Minimum 3 characters required';
-      preview.style.color = '#EF4444';
-    } else {
-      preview.textContent = '';
-    }
-  });
-
-  function saveSubdomain() {
-    const val = document.getElementById('subdomainInput').value.trim();
-    const status = document.getElementById('subdomainStatus');
-    if (!val || val.length < 3) {
-      status.style.display = 'block';
-      status.style.color = '#EF4444';
-      status.textContent = '❌ Subdomain must be at least 3 characters.';
-      return;
-    }
-    if (!/^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/.test(val)) {
-      status.style.display = 'block';
-      status.style.color = '#EF4444';
-      status.textContent = '❌ Only lowercase letters, numbers, and hyphens allowed.';
-      return;
-    }
-    localStorage.setItem('sakura_subdomain', val);
-    localStorage.setItem('sakura_subdomain_url', `https://${val}.sakura-ai.com`);
-    status.style.display = 'block';
-    status.style.color = 'var(--primary-deep)';
-    status.textContent = `✅ Saved! Your site: https://${val}.sakura-ai.com`;
-    document.getElementById('subdomainPreview').textContent = `🔗 https://${val}.sakura-ai.com`;
-    showToast('🌸 Subdomain saved successfully!');
-  }
-
-  function copySubdomainLink() {
-    const val = document.getElementById('subdomainInput').value.trim();
-    if (!val) { showToast('Enter a subdomain first'); return; }
-    const url = `https://${val}.sakura-ai.com`;
-    navigator.clipboard.writeText(url).then(() => {
-      showToast('🔗 Link copied to clipboard!');
-    }).catch(() => {
-      showToast('Link: ' + url);
-    });
-  }
-
   function showSection(section) {
-    if (section === 'mysite') {
-      document.getElementById('mysiteSection').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      document.getElementById('projectsSection').scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('projectsSection').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
 </body>
